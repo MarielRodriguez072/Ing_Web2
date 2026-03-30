@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Análisis detallado de tus patrones de consumo en Mangómetro.">
+    <title>Análisis de Gastos - Mangómetro</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🥭</text></svg>">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar" role="navigation" aria-label="Navegación principal">
+        <div class="nav-container">
+            <a href="index.html" class="logo" title="Volver a Mangómetro">
+                <h2>🥭 Mangómetro</h2>
+            </a>
+            <div class="nav-buttons">
+                <button class="btn-secondary" id="logout-btn">Cerrar Sesión</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Analysis Content -->
+    <section class="analysis-section" role="main">
+        <div class="container">
+            <h1>📈 Análisis de Gastos</h1>
+            <p class="page-subtitle">Visualiza tus patrones de consumo y obtén insights sobre tus gastos</p>
+
+            <!-- Filters -->
+            <div class="filters-section">
+                <div class="filter-group">
+                    <label for="month-filter">Mes:</label>
+                    <select id="month-filter">
+                        <option value="">Todos los meses</option>
+                        <option value="01">Enero</option>
+                        <option value="02">Febrero</option>
+                        <option value="03">Marzo</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="category-filter">Categoría:</label>
+                    <select id="category-filter">
+                        <option value="">Todas</option>
+                        <option value="supermercado">Supermercado</option>
+                        <option value="transporte">Transporte</option>
+                        <option value="entretenimiento">Entretenimiento</option>
+                        <option value="comida">Comida</option>
+                    </select>
+                </div>
+
+                <button class="btn-secondary" onclick="applyFilters()">Aplicar Filtros</button>
+            </div>
+
+            <!-- Analysis Cards -->
+            <div class="analysis-grid">
+                <div class="analysis-card">
+                    <h3>Gasto Total</h3>
+                    <p class="metric">$0.00</p>
+                    <p class="metric-info">Este mes</p>
+                </div>
+
+                <div class="analysis-card">
+                    <h3>Gasto Promedio</h3>
+                    <p class="metric">$0.00</p>
+                    <p class="metric-info">Por gasto</p>
+                </div>
+
+                <div class="analysis-card">
+                    <h3>Categoría Principal</h3>
+                    <p class="metric">--</p>
+                    <p class="metric-info">Sin datos</p>
+                </div>
+
+                <div class="analysis-card">
+                    <h3>Número de Gastos</h3>
+                    <p class="metric">0</p>
+                    <p class="metric-info">Transacciones</p>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-section">
+                <h2>Visualizaciones</h2>
+                
+                <div class="chart-placeholder">
+                    <div class="icon">📊</div>
+                    <h3>Gráfico de Torta por Categoría</h3>
+                    <p>Los gráficos se mostrarán cuando tengas datos registrados</p>
+                </div>
+
+                <div class="chart-placeholder">
+                    <div class="icon">📉</div>
+                    <h3>Evolución Mensual</h3>
+                    <p>Visualiza cómo han variado tus gastos a lo largo del tiempo</p>
+                </div>
+
+                <div class="chart-placeholder">
+                    <div class="icon">🏆</div>
+                    <h3>Top Comercios</h3>
+                    <p>Los lugares donde más gastas dinero</p>
+                </div>
+            </div>
+
+            <!-- Recent Expenses Table -->
+            <div class="expenses-table-section" style="margin-top: 3rem;">
+                <h2>Gastos Recientes</h2>
+                <table class="expenses-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Comercio</th>
+                            <th>Categoría</th>
+                            <th>Monto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: var(--text-light); padding: 2rem;">
+                                No hay gastos registrados aún. 
+                                <a href="tickets.html" style="color: var(--primary); font-weight: 600;">Carga tu primer ticket →</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Navigation Links -->
+            <div style="margin-top: 3rem; text-align: center;">
+                <a href="dashboard.html" class="link">← Volver al Dashboard</a>
+                <span style="color: var(--text-light); margin: 0 1rem;">•</span>
+                <a href="tickets.html" class="link">Cargar Ticket →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <p>&copy; 2026 Mangómetro. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <style>
+        .analysis-section {
+            min-height: 100vh;
+            padding: 100px 20px 40px;
+            background: var(--bg);
+        }
+
+        .analysis-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .filters-section {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-weight: 500;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .filter-group select {
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            min-width: 150px;
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .analysis-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .analysis-card h3 {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+
+        .metric {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-info {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .charts-section {
+            margin-bottom: 3rem;
+        }
+
+        .charts-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+
+        .chart-placeholder {
+            background: var(--white);
+            padding: 3rem 2rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .chart-placeholder .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .chart-placeholder h3 {
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .chart-placeholder p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .expenses-table-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+
+        .expenses-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .expenses-table thead {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+        }
+
+        .expenses-table th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .expenses-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .expenses-table tbody tr:hover {
+            background: rgba(255, 199, 44, 0.05);
+        }
+
+        .link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .link:hover {
+            color: var(--secondary);
+        }
+
+        @media (max-width: 768px) {
+            .analysis-section {
+                padding: 100px 20px 40px;
+            }
+
+            .analysis-section h1 {
+                font-size: 1.8rem;
+            }
+
+            .filters-section {
+                flex-direction: column;
+            }
+
+            .filter-group select {
+                min-width: 100%;
+            }
+
+            .analysis-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .expenses-table {
+                font-size: 0.9rem;
+            }
+
+            .expenses-table th, .expenses-table td {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+
+    <script>
+        function applyFilters() {
+            alert('Los filtros se aplicarán cuando haya datos registrados');
+        }
+
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            alert('Sesión cerrada correctamente');
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>

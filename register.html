@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Crea una nueva cuenta en Mangómetro y comienza a gestionar tus gastos personales.">
+    <title>Registrarse - Mangómetro</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🥭</text></svg>">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar" role="navigation" aria-label="Navegación principal">
+        <div class="nav-container">
+            <a href="index.html" class="logo" title="Volver a Mangómetro">
+                <h2>🥭 Mangómetro</h2>
+            </a>
+            <div class="nav-buttons">
+                <a href="login.html" class="btn-secondary">Iniciar Sesión</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Register Section -->
+    <section class="auth-section" role="main">
+        <div class="auth-container">
+            <div class="auth-card">
+                <h1>Crear Cuenta</h1>
+                <p class="auth-subtitle">Únete a Mangómetro y gestiona tus gastos inteligentemente</p>
+                
+                <form id="register-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="name">Nombre Completo</label>
+                        <input 
+                            type="text" 
+                            id="name" 
+                            name="name" 
+                            placeholder="Tu nombre" 
+                            required 
+                            aria-label="Nombre completo"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            placeholder="tu@email.com" 
+                            required 
+                            aria-label="Correo electrónico"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Contraseña</label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            placeholder="••••••••" 
+                            required 
+                            minlength="6"
+                            aria-label="Contraseña (mínimo 6 caracteres)"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="role">Tipo de Usuario</label>
+                        <select id="role" name="role" required aria-label="Selecciona tu rol">
+                            <option value="">Selecciona tu rol</option>
+                            <option value="usuario">Usuario Regular</option>
+                            <option value="asesor">Asesor Financiero</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-primary btn-large" style="width: 100%;">
+                        Crear Cuenta
+                    </button>
+                </form>
+
+                <p class="auth-footer">
+                    ¿Ya tienes cuenta? 
+                    <a href="login.html" class="link">Inicia sesión aquí</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <p>&copy; 2026 Mangómetro. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <style>
+        .auth-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 80px 20px 40px;
+            background: var(--bg);
+        }
+
+        .auth-container {
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .auth-card {
+            background: var(--white);
+            padding: 3rem 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .auth-card h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .auth-subtitle {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 199, 44, 0.1);
+        }
+
+        .auth-footer {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .link:hover {
+            color: var(--secondary);
+        }
+
+        @media (max-width: 768px) {
+            .auth-section {
+                padding: 100px 20px 40px;
+            }
+
+            .auth-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .auth-card h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+
+    <script>
+        document.getElementById('register-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('✅ Cuenta registrada correctamente\n\nSerás redirigido al Dashboard');
+            window.location.href = 'dashboard.html';
+        });
+    </script>
+</body>
+</html>

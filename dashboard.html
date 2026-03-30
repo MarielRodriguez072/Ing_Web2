@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dashboard de Mangómetro - Ve un resumen de tus finanzas personales en tiempo real.">
+    <title>Dashboard - Mangómetro</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🥭</text></svg>">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar" role="navigation" aria-label="Navegación principal">
+        <div class="nav-container">
+            <a href="index.html" class="logo" title="Volver a Mangómetro">
+                <h2>🥭 Mangómetro</h2>
+            </a>
+            <div class="nav-buttons">
+                <button class="btn-secondary" id="logout-btn">Cerrar Sesión</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <section class="dashboard-section" role="main">
+        <div class="container">
+            <h1>📊 Dashboard</h1>
+            <p class="page-subtitle">Resumen de tus finanzas en tiempo real</p>
+
+            <div class="dashboard-grid">
+                <!-- Summary Cards -->
+                <div class="summary-card">
+                    <div class="summary-icon">💰</div>
+                    <h3>Gasto Total (Mes)</h3>
+                    <p class="summary-value">$0.00</p>
+                </div>
+
+                <div class="summary-card">
+                    <div class="summary-icon">📈</div>
+                    <h3>Gastos por Categoría</h3>
+                    <p class="summary-value">0 categorías</p>
+                </div>
+
+                <div class="summary-card">
+                    <div class="summary-icon">🛒</div>
+                    <h3>Última Compra</h3>
+                    <p class="summary-value">Sin registros</p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons" style="margin-top: 3rem;">
+                <a href="tickets.html" class="btn-primary btn-large">📱 Cargar Ticket</a>
+                <a href="analysis.html" class="btn-secondary btn-large">📈 Ver Análisis</a>
+                <a href="index.html" class="btn-secondary btn-large">🏠 Volver al Inicio</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <p>&copy; 2026 Mangómetro. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <style>
+        .dashboard-section {
+            min-height: 100vh;
+            padding: 100px 20px 40px;
+            background: var(--bg);
+        }
+
+        .dashboard-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .summary-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .summary-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .summary-card h3 {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .action-buttons a, .action-buttons button {
+            flex: 1;
+            min-width: 200px;
+            max-width: 300px;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-section {
+                padding: 100px 20px 40px;
+            }
+
+            .dashboard-section h1 {
+                font-size: 1.8rem;
+            }
+
+            .page-subtitle {
+                font-size: 1rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-buttons a {
+                max-width: none;
+            }
+        }
+    </style>
+
+    <script>
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            alert('Sesión cerrada correctamente');
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Inicia sesión en tu cuenta de Mangómetro para gestionar tus gastos personales.">
+    <title>Iniciar Sesión - Mangómetro</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🥭</text></svg>">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar" role="navigation" aria-label="Navegación principal">
+        <div class="nav-container">
+            <a href="index.html" class="logo" title="Volver a Mangómetro">
+                <h2>🥭 Mangómetro</h2>
+            </a>
+            <div class="nav-buttons">
+                <a href="register.html" class="btn-primary">Registrarse</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Section -->
+    <section class="auth-section" role="main">
+        <div class="auth-container">
+            <div class="auth-card">
+                <h1>🥭 Iniciar Sesión</h1>
+                <p class="auth-subtitle">Accede a tu cuenta para gestionar tus gastos personales</p>
+                
+                <!-- Alert Messages -->
+                <div id="alert-container"></div>
+                
+                <form id="login-form" class="auth-form" novalidate>
+                    <div class="form-group">
+                        <label for="identifier">Email o Usuario</label>
+                        <input 
+                            type="text" 
+                            id="identifier" 
+                            name="identifier" 
+                            placeholder="ejemplo@email.com o tu_usuario" 
+                            required 
+                            aria-label="Email o nombre de usuario"
+                            autocomplete="username"
+                        >
+                        <small class="form-help">Usa tu email o nombre de usuario registrado</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Contraseña</label>
+                        <div class="password-container">
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                placeholder="••••••••" 
+                                required 
+                                minlength="6"
+                                aria-label="Contraseña"
+                                autocomplete="current-password"
+                            >
+                            <button type="button" class="toggle-password" id="toggle-password" aria-label="Mostrar/ocultar contraseña">
+                                👁️
+                            </button>
+                        </div>
+                        <small class="form-help">Mínimo 6 caracteres</small>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="remember-me" name="remember-me">
+                            <span>Recuérdame</span>
+                        </label>
+                        <a href="recover-password.html" class="link link-small">¿Olvidaste tu contraseña?</a>
+                    </div>
+
+                    <button type="submit" class="btn-primary btn-large" style="width: 100%;" id="submit-btn">
+                        Iniciar Sesión
+                    </button>
+                </form>
+
+                <div class="auth-divider">o</div>
+
+                <p class="auth-footer">
+                    ¿No tienes cuenta? 
+                    <a href="register.html" class="link">Regístrate aquí</a>
+                </p>
+
+                <p class="auth-footer-small">
+                    <a href="index.html" class="link link-small">← Volver a inicio</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <p>&copy; 2026 Mangómetro. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <style>
+        .auth-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px 40px;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 50%, var(--accent) 100%);
+            position: relative;
+        }
+
+        .auth-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+        }
+
+        .auth-container {
+            max-width: 450px;
+            width: 100%;
+            position: relative;
+            z-index: 2;
+        }
+
+        .auth-card {
+            background: var(--white);
+            padding: 3rem 2.5rem;
+            border-radius: calc(var(--border-radius) * 1.25);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .auth-card h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+        }
+
+        .auth-subtitle {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        #alert-container {
+            margin-bottom: 1.5rem;
+            min-height: 40px;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-error {
+            background: #fee;
+            color: #c33;
+            border: 1px solid #fcc;
+        }
+
+        .alert-success {
+            background: #efe;
+            color: #3c3;
+            border: 1px solid #cfc;
+        }
+
+        .alert-warning {
+            background: #fef3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.95rem;
+            letter-spacing: 0.3px;
+        }
+
+        .form-group input,
+        .password-container {
+            position: relative;
+        }
+
+        .password-container {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: var(--transition);
+            box-sizing: border-box;
+        }
+
+        .password-container input {
+            flex: 1;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 8px;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .toggle-password:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(255, 199, 44, 0.15);
+        }
+
+        .form-help {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            opacity: 0.8;
+        }
+
+        .form-group input:invalid:not(:placeholder-shown) {
+            border-color: #ff6b6b;
+        }
+
+        .form-group input:valid:not(:placeholder-shown) {
+            border-color: #51cf66;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            user-select: none;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .checkbox-label:hover {
+            color: var(--text);
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .link:hover {
+            color: var(--secondary);
+            text-decoration: underline;
+        }
+
+        .link-small {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        #submit-btn {
+            padding: 14px 32px;
+            font-size: 1rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(255, 199, 44, 0.3);
+            transition: var(--transition);
+        }
+
+        #submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 199, 44, 0.4);
+        }
+
+        #submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .auth-divider {
+            text-align: center;
+            color: var(--text-light);
+            margin: 2rem 0 1.5rem;
+            position: relative;
+            font-size: 0.9rem;
+        }
+
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: calc(50% - 1.5rem);
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .auth-divider::before {
+            left: 0;
+        }
+
+        .auth-divider::after {
+            right: 0;
+        }
+
+        .auth-footer {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-top: 1.5rem;
+        }
+
+        .auth-footer-small {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        @media (max-width: 768px) {
+            .auth-section {
+                padding: 100px 16px 40px;
+            }
+
+            .auth-card {
+                padding: 2.5rem 1.5rem;
+            }
+
+            .auth-card h1 {
+                font-size: 1.6rem;
+            }
+
+            .form-options {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .auth-form {
+                gap: 1.2rem;
+            }
+        }
+    </style>
+
+    <script>
+        // ========== ELEMENTOS DEL DOM ==========
+        const loginForm = document.getElementById('login-form');
+        const identifierInput = document.getElementById('identifier');
+        const passwordInput = document.getElementById('password');
+        const togglePasswordBtn = document.getElementById('toggle-password');
+        const rememberMeCheckbox = document.getElementById('remember-me');
+        const submitBtn = document.getElementById('submit-btn');
+        const alertContainer = document.getElementById('alert-container');
+
+        // ========== SHOW/HIDE PASSWORD ==========
+        togglePasswordBtn.addEventListener('click', function() {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            this.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
+        });
+
+        // ========== FUNCIONES DE VALIDACIÓN ==========
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function isValidUsername(username) {
+            return username.length >= 3 && /^[a-zA-Z0-9_-]+$/.test(username);
+        }
+
+        function validateForm() {
+            const identifier = identifierInput.value.trim();
+            const password = passwordInput.value;
+
+            if (!identifier) {
+                showAlert('Por favor ingresa tu email o usuario', 'error');
+                return false;
+            }
+
+            const isEmail = identifier.includes('@');
+            if (isEmail && !isValidEmail(identifier)) {
+                showAlert('Por favor ingresa un email válido', 'error');
+                return false;
+            }
+
+            if (!isEmail && !isValidUsername(identifier)) {
+                showAlert('Usuario inválido. Usa letras, números, guiones y guiones bajos (mínimo 3 caracteres)', 'error');
+                return false;
+            }
+
+            if (!password) {
+                showAlert('Por favor ingresa tu contraseña', 'error');
+                return false;
+            }
+
+            if (password.length < 6) {
+                showAlert('La contraseña debe tener al menos 6 caracteres', 'error');
+                return false;
+            }
+
+            return true;
+        }
+
+        // ========== MOSTRAR ALERTAS ==========
+        function showAlert(message, type = 'info') {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            
+            // Emoji según tipo
+            const icons = {
+                error: '❌',
+                success: '✅',
+                warning: '⚠️',
+                info: 'ℹ️'
+            };
+            
+            alert.innerHTML = `
+                <span>${icons[type]}</span>
+                <span>${message}</span>
+            `;
+
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alert);
+
+            // Auto-desaparece después de 5 segundos
+            if (type !== 'info') {
+                setTimeout(() => alert.remove(), 5000);
+            }
+        }
+
+        // ========== SIMULAR LOGIN ==========
+        function simulateLogin(identifier, password) {
+            // Simulación: cualquier email/usuario + password válida = login exitoso
+            // En una app real, esto iría al backend
+            
+            // Crear objeto de usuario
+            const user = {
+                id: Math.random().toString(36).substr(2, 9),
+                identifier: identifier,
+                email: identifier.includes('@') ? identifier : `${identifier}@mangometro.local`,
+                username: identifier.includes('@') ? identifier.split('@')[0] : identifier,
+                loginTime: new Date().toISOString(),
+                rememberMe: rememberMeCheckbox.checked
+            };
+
+            // Guardar en localStorage
+            localStorage.setItem('mangometro_user', JSON.stringify(user));
+            localStorage.setItem('mangometro_token', `token_${user.id}_${Date.now()}`);
+
+            if (rememberMeCheckbox.checked) {
+                localStorage.setItem('mangometro_remember_identifier', identifier);
+            }
+
+            return user;
+        }
+
+        // ========== MANEJAR SUBMIT DEL FORMULARIO ==========
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Validar formulario
+            if (!validateForm()) {
+                return;
+            }
+
+            // Desabilitar botón durante login
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Iniciando sesión...';
+
+            // Simular tiempo de red (500-1000ms)
+            const delay = Math.random() * 500 + 500;
+            
+            setTimeout(() => {
+                try {
+                    const identifier = identifierInput.value.trim();
+                    const password = passwordInput.value;
+
+                    // Simular login exitoso
+                    const user = simulateLogin(identifier, password);
+
+                    showAlert(`¡Bienvenido, ${user.username}! Redirigiendo...`, 'success');
+
+                    // Redirigir después de 1 segundo
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1000);
+
+                } catch (error) {
+                    showAlert('Error al iniciar sesión. Intenta de nuevo.', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Iniciar Sesión';
+                }
+            }, delay);
+        });
+
+        // ========== CARGAR REMEMBER ME ==========
+        window.addEventListener('load', function() {
+            const rememberedIdentifier = localStorage.getItem('mangometro_remember_identifier');
+            const existingUser = localStorage.getItem('mangometro_user');
+
+            if (rememberedIdentifier) {
+                identifierInput.value = rememberedIdentifier;
+                rememberMeCheckbox.checked = true;
+                passwordInput.focus();
+            }
+
+            // Si ya hay sesión activa, redirigir a dashboard
+            if (existingUser) {
+                showAlert('Ya tienes una sesión activa. Redirigiendo...', 'info');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            }
+        });
+
+        // ========== VALIDACIÓN EN TIEMPO REAL ==========
+        identifierInput.addEventListener('blur', function() {
+            if (this.value && !this.value.includes('@')) {
+                if (!isValidUsername(this.value)) {
+                    this.style.borderColor = '#ff6b6b';
+                }
+            }
+        });
+
+        passwordInput.addEventListener('input', function() {
+            submitBtn.disabled = !identifierInput.value.trim() || !this.value;
+        });
+
+        console.log('🥭 Login Mangómetro cargado correctamente');
+    </script>
+</body>
+</html>
