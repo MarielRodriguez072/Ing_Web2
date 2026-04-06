@@ -302,10 +302,69 @@
 
         document.getElementById('ticket-form').addEventListener('submit', function(e) {
             e.preventDefault();
+
+            // Obtener datos del formulario
+            const commerce = document.getElementById('commerce').value.trim();
+            const amount = parseFloat(document.getElementById('amount').value);
+            const date = document.getElementById('date').value;
+            const category = document.getElementById('category').value;
+            const description = document.getElementById('description').value.trim();
+
+            // Validar datos
+            if (!commerce || !amount || !date || !category) {
+                alert('Por favor, completa todos los campos obligatorios');
+                return;
+            }
+
+            if (amount <= 0) {
+                alert('El monto debe ser mayor a 0');
+                return;
+            }
+
+            // Obtener usuario actual
+            const userStr = localStorage.getItem('mangometro_user');
+            if (!userStr) {
+                alert('No hay sesión activa. Por favor, inicia sesión.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const user = JSON.parse(userStr);
+
+            // Crear objeto de gasto
+            const expense = {
+                id: Date.now().toString(),
+                commerce: commerce,
+                amount: amount.toFixed(2),
+                date: date,
+                category: category,
+                description: description || '',
+                userId: user.id,
+                createdAt: new Date().toISOString()
+            };
+
+            // Guardar gasto
+            saveExpense(expense);
+
             alert('✅ Gasto guardado correctamente');
             this.reset();
             preview.style.display = 'none';
+
+            // Set today's date as default again
+            document.getElementById('date').valueAsDate = new Date();
         });
+
+        function saveExpense(expense) {
+            const expensesKey = `mangometro_expenses_${expense.userId}`;
+            const existingExpensesStr = localStorage.getItem(expensesKey);
+            const existingExpenses = existingExpensesStr ? JSON.parse(existingExpensesStr) : [];
+
+            // Agregar nuevo gasto
+            existingExpenses.push(expense);
+
+            // Guardar en localStorage
+            localStorage.setItem(expensesKey, JSON.stringify(existingExpenses));
+        }
 
         document.getElementById('logout-btn').addEventListener('click', function() {
             alert('Sesión cerrada correctamente');
