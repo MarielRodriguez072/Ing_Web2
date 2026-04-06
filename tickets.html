@@ -49,6 +49,11 @@
                     <img id="previewImg" style="max-width: 100%; border-radius: 12px;">
                 </div>
 
+                <div class="preview-actions" style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; align-items: center;">
+                    <button type="button" class="btn-secondary" id="process-ticket-btn">🤖 Procesar ticket</button>
+                    <span id="process-status" style="color: var(--text-light); font-size: 0.95rem;">Sube o arrastra una imagen para simular la extracción de datos.</span>
+                </div>
+
                 <!-- Manual Form -->
                 <form id="ticket-form" class="ticket-form">
                     <h3 style="margin-top: 2rem; color: var(--text);">O completa manualmente:</h3>
@@ -300,17 +305,23 @@
             }
         }
 
+        const processButton = document.getElementById('process-ticket-btn');
+        const commerceInput = document.getElementById('commerce');
+        const amountInput = document.getElementById('amount');
+        const dateInput = document.getElementById('date');
+        const categoryInput = document.getElementById('category');
+        const descriptionInput = document.getElementById('description');
+        const previewContainer = document.getElementById('preview');
+
         document.getElementById('ticket-form').addEventListener('submit', function(e) {
             e.preventDefault();
 
-            // Obtener datos del formulario
-            const commerce = document.getElementById('commerce').value.trim();
-            const amount = parseFloat(document.getElementById('amount').value);
-            const date = document.getElementById('date').value;
-            const category = document.getElementById('category').value;
-            const description = document.getElementById('description').value.trim();
+            const commerce = commerceInput.value.trim();
+            const amount = parseFloat(amountInput.value);
+            const date = dateInput.value;
+            const category = categoryInput.value;
+            const description = descriptionInput.value.trim();
 
-            // Validar datos
             if (!commerce || !amount || !date || !category) {
                 alert('Por favor, completa todos los campos obligatorios');
                 return;
@@ -321,7 +332,6 @@
                 return;
             }
 
-            // Obtener usuario actual
             const userStr = localStorage.getItem('mangometro_user');
             if (!userStr) {
                 alert('No hay sesión activa. Por favor, inicia sesión.');
@@ -330,39 +340,85 @@
             }
 
             const user = JSON.parse(userStr);
-
-            // Crear objeto de gasto
             const expense = {
                 id: Date.now().toString(),
-                commerce: commerce,
+                commerce,
                 amount: amount.toFixed(2),
-                date: date,
-                category: category,
+                date,
+                category,
                 description: description || '',
                 userId: user.id,
                 createdAt: new Date().toISOString()
             };
 
-            // Guardar gasto
             saveExpense(expense);
-
             alert('✅ Gasto guardado correctamente');
             this.reset();
             preview.style.display = 'none';
-
-            // Set today's date as default again
-            document.getElementById('date').valueAsDate = new Date();
+            dateInput.valueAsDate = new Date();
         });
+
+        processButton.addEventListener('click', () => {
+            const file = fileInput.files[0];
+            if (!file) {
+                alert('Selecciona una imagen antes de procesar el ticket.');
+                return;
+            }
+
+            processButton.disabled = true;
+            const statusText = document.getElementById('process-status');
+            statusText.textContent = 'Procesando ticket...';
+            processButton.textContent = '⏳ Procesando';
+
+            setTimeout(() => {
+                simulateAiExtraction(file);
+                processButton.disabled = false;
+                processButton.textContent = '🤖 Procesar ticket';
+                statusText.textContent = 'Campos completados automáticamente por IA. Revisa y guarda el gasto.';
+            }, 1400);
+        });
+
+        function simulateAiExtraction(file) {
+            const examples = [
+                {
+                    commerce: 'Supermercado Día',
+                    amount: '246.70',
+                    category: 'supermercado',
+                    description: 'Compra semanal'
+                },
+                {
+                    commerce: 'Café Express',
+                    amount: '12.50',
+                    category: 'comida',
+                    description: 'Café y snack'
+                },
+                {
+                    commerce: 'MetroBus',
+                    amount: '35.00',
+                    category: 'transporte',
+                    description: 'Recarga transporte'
+                },
+                {
+                    commerce: 'Cine Galaxy',
+                    amount: '45.90',
+                    category: 'entretenimiento',
+                    description: 'Entrada de cine'
+                }
+            ];
+
+            const selected = examples[Math.floor(Math.random() * examples.length)];
+            commerceInput.value = selected.commerce;
+            amountInput.value = selected.amount;
+            categoryInput.value = selected.category;
+            descriptionInput.value = selected.description;
+            dateInput.valueAsDate = new Date();
+        }
 
         function saveExpense(expense) {
             const expensesKey = `mangometro_expenses_${expense.userId}`;
             const existingExpensesStr = localStorage.getItem(expensesKey);
             const existingExpenses = existingExpensesStr ? JSON.parse(existingExpensesStr) : [];
-
-            // Agregar nuevo gasto
             existingExpenses.push(expense);
-
-            // Guardar en localStorage
             localStorage.setItem(expensesKey, JSON.stringify(existingExpenses));
         }
 

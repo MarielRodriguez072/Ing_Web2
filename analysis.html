@@ -34,10 +34,6 @@
                     <label for="month-filter">Mes:</label>
                     <select id="month-filter">
                         <option value="">Todos los meses</option>
-                        <option value="01">Enero</option>
-                        <option value="02">Febrero</option>
-                        <option value="03">Marzo</option>
-                        <option value="12">Diciembre</option>
                     </select>
                 </div>
 
@@ -85,23 +81,30 @@
             <!-- Charts Section -->
             <div class="charts-section">
                 <h2>Visualizaciones</h2>
-                
-                <div class="chart-placeholder">
-                    <div class="icon">📊</div>
-                    <h3>Gráfico de Torta por Categoría</h3>
-                    <p>Los gráficos se mostrarán cuando tengas datos registrados</p>
+
+                <div class="chart-card">
+                    <div class="chart-card-header">
+                        <div class="icon">📊</div>
+                        <h3>Gastos por categoría</h3>
+                    </div>
+                    <div id="category-chart" class="chart-list"></div>
                 </div>
 
-                <div class="chart-placeholder">
-                    <div class="icon">📉</div>
-                    <h3>Evolución Mensual</h3>
-                    <p>Visualiza cómo han variado tus gastos a lo largo del tiempo</p>
+                <div class="chart-card">
+                    <div class="chart-card-header">
+                        <div class="icon">📉</div>
+                        <h3>Gastos por mes</h3>
+                    </div>
+                    <div id="monthly-chart" class="chart-list"></div>
                 </div>
 
-                <div class="chart-placeholder">
-                    <div class="icon">🏆</div>
-                    <h3>Top Comercios</h3>
-                    <p>Los lugares donde más gastas dinero</p>
+                <div class="chart-card">
+                    <div class="chart-card-header">
+                        <div class="icon">🏆</div>
+                        <h3>Categoría principal</h3>
+                    </div>
+                    <div id="top-category" class="metric" style="margin-bottom: 0.5rem;">--</div>
+                    <p class="metric-info">La categoría donde más gastas</p>
                 </div>
             </div>
 
@@ -267,6 +270,65 @@
             font-size: 0.95rem;
         }
 
+        .chart-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .chart-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
+            align-items: center;
+            font-size: 0.95rem;
+        }
+
+        .chart-row span {
+            color: var(--text);
+        }
+
+        .bar-track {
+            width: 100%;
+            background: #f5e9cf;
+            border-radius: 999px;
+            overflow: hidden;
+            height: 18px;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 999px;
+            transition: width 0.4s ease;
+        }
+
+        .chart-value {
+            text-align: right;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .metric-small {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+        }
+
         .expenses-table-section h2 {
             font-size: 1.5rem;
             margin-bottom: 1.5rem;
@@ -345,8 +407,195 @@
     </style>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = getCurrentUser();
+            if (!user) {
+                alert('No hay sesión activa. Redirigiendo al inicio...');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const expenses = getUserExpenses(user.id);
+            renderSummary(expenses);
+            renderCharts(expenses);
+            renderRecentTable(expenses);
+            populateMonthFilter(expenses);
+        });
+
+        function getCurrentUser() {
+            const userStr = localStorage.getItem('mangometro_user');
+            return userStr ? JSON.parse(userStr) : null;
+        }
+
+        function getUserExpenses(userId) {
+            const key = `mangometro_expenses_${userId}`;
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : [];
+        }
+
+        function renderSummary(expenses) {
+            const total = expenses.reduce((sum, expense) => sum + (parseFloat(expense.amount) || 0), 0);
+            const categoryTotals = expenses.reduce((acc, expense) => {
+                const category = expense.category || 'otro';
+                acc[category] = (acc[category] || 0) + (parseFloat(expense.amount) || 0);
+                return acc;
+            }, {});
+
+            const topCategory = Object.entries(categoryTotals)
+                .sort((a, b) => b[1] - a[1])[0] || ['', 0];
+
+            const average = expenses.length ? total / expenses.length : 0;
+
+            const cards = document.querySelectorAll('.analysis-card .metric');
+            if (cards.length >= 4) {
+                cards[0].textContent = `$${total.toFixed(2)}`;
+                cards[1].textContent = `$${average.toFixed(2)}`;
+                cards[2].textContent = formatCategory(topCategory[0]);
+                cards[3].textContent = expenses.length;
+            }
+
+            const topCategoryBox = document.getElementById('top-category');
+            if (topCategoryBox) {
+                topCategoryBox.textContent = topCategory[0] ? formatCategory(topCategory[0]) : 'Sin datos';
+            }
+        }
+
+        function renderCharts(expenses) {
+            const categoryTotals = expenses.reduce((acc, expense) => {
+                const category = expense.category || 'otro';
+                acc[category] = (acc[category] || 0) + (parseFloat(expense.amount) || 0);
+                return acc;
+            }, {});
+
+            const monthlyTotals = expenses.reduce((acc, expense) => {
+                const date = new Date(expense.date);
+                if (isNaN(date)) return acc;
+                const monthKey = date.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+                acc[monthKey] = (acc[monthKey] || 0) + (parseFloat(expense.amount) || 0);
+                return acc;
+            }, {});
+
+            renderChartList('category-chart', categoryTotals);
+            renderChartList('monthly-chart', monthlyTotals);
+        }
+
+        function renderChartList(containerId, data) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            const entries = Object.entries(data).sort((a, b) => b[1] - a[1]);
+            if (entries.length === 0) {
+                container.innerHTML = '<p class="metric-small">No hay datos para mostrar.</p>';
+                return;
+            }
+
+            const maxValue = Math.max(...entries.map(e => e[1]));
+            container.innerHTML = entries.map(([label, value]) => {
+                const width = maxValue > 0 ? Math.max(8, (value / maxValue) * 100) : 0;
+                return `
+                    <div class="chart-row">
+                        <span>${formatCategory(label)}</span>
+                        <div>
+                            <div class="bar-track">
+                                <div class="bar-fill" style="width: ${width}%;"></div>
+                            </div>
+                            <div class="chart-value">$${value.toFixed(2)}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderRecentTable(expenses) {
+            const tbody = document.querySelector('.expenses-table tbody');
+            if (!tbody) return;
+
+            if (expenses.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-light); padding: 2rem;">No hay gastos registrados aún. <a href="tickets.html" style="color: var(--primary); font-weight: 600;">Carga tu primer ticket →</a></td></tr>';
+                return;
+            }
+
+            const recent = expenses
+                .slice()
+                .sort((a, b) => new Date(b.date) - new Date(a.date))
+                .slice(0, 5);
+
+            tbody.innerHTML = recent.map(expense => `
+                <tr>
+                    <td>${formatDate(expense.date)}</td>
+                    <td>${expense.commerce || 'Sin comercio'}</td>
+                    <td>${formatCategory(expense.category)}</td>
+                    <td>$${parseFloat(expense.amount).toFixed(2)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function formatCategory(category) {
+            const map = {
+                supermercado: 'Supermercado',
+                transporte: 'Transporte',
+                entretenimiento: 'Entretenimiento',
+                comida: 'Comida',
+                servicios: 'Servicios',
+                otro: 'Otro'
+            };
+            return map[category] || category || 'Sin categoría';
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            if (isNaN(date)) return dateString || '--';
+            return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        function populateMonthFilter(expenses) {
+            const monthFilter = document.getElementById('month-filter');
+            if (!monthFilter) return;
+
+            const monthKeys = [...new Set(expenses.map(exp => {
+                const date = new Date(exp.date);
+                if (isNaN(date)) return null;
+                return date.toLocaleDateString('es-ES', { month: '2-digit', year: 'numeric' });
+            }).filter(Boolean))];
+
+            const monthNames = [...new Set(expenses.map(exp => {
+                const date = new Date(exp.date);
+                if (isNaN(date)) return null;
+                return date.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+            }).filter(Boolean))];
+
+            if (monthKeys.length === 0) return;
+
+            monthFilter.innerHTML = '<option value="">Todos los meses</option>' +
+                monthKeys.map((key, index) => `
+                    <option value="${key}">${monthNames[index]}</option>
+                `).join('');
+        }
+
         function applyFilters() {
-            alert('Los filtros se aplicarán cuando haya datos registrados');
+            const monthFilter = document.getElementById('month-filter').value;
+            const categoryFilter = document.getElementById('category-filter').value;
+            const user = getCurrentUser();
+            if (!user) return;
+
+            let expenses = getUserExpenses(user.id);
+
+            if (categoryFilter) {
+                expenses = expenses.filter(exp => exp.category === categoryFilter);
+            }
+
+            if (monthFilter) {
+                expenses = expenses.filter(exp => {
+                    const date = new Date(exp.date);
+                    if (isNaN(date)) return false;
+                    const key = date.toLocaleDateString('es-ES', { month: '2-digit', year: 'numeric' });
+                    return key === monthFilter;
+                });
+            }
+
+            renderSummary(expenses);
+            renderCharts(expenses);
+            renderRecentTable(expenses);
         }
 
         document.getElementById('logout-btn').addEventListener('click', function() {
