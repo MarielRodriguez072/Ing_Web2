@@ -24,11 +24,25 @@
 
     <!-- Tickets Content -->
     <section class="tickets-section" role="main">
-        <div class="container" style="max-width: 600px;">
-            <h1>📱 Carga de Tickets</h1>
-            <p class="page-subtitle">Sube una imagen de tu recibo para registrar gastos automáticamente</p>
+        <div class="dashboard-layout">
+            <aside class="sidebar">
+                <h2>🥭 Mangómetro</h2>
+                <ul>
+                    <li><a href="dashboard.html">Dashboard</a></li>
+                    <li><a href="tickets.html">Cargar tickets</a></li>
+                    <li><a href="analysis.html">Análisis de gastos</a></li>
+                    <li><a href="#" class="logout-link">Logout</a></li>
+                </ul>
+            </aside>
 
-            <div class="ticket-form-card">
+            <div class="main-content">
+                <div class="content-header">
+                    <h1>📱 Carga de Tickets</h1>
+                    <p class="page-subtitle">Sube una imagen de tu recibo para registrar gastos automáticamente</p>
+                </div>
+
+                <div class="container" style="max-width: 600px;">
+                    <div class="ticket-form-card">
                 <!-- File Upload -->
                 <div class="upload-zone" id="uploadZone">
                     <div class="upload-content">
@@ -128,6 +142,8 @@
                 <span style="color: var(--text-light); margin: 0 1rem;">•</span>
                 <a href="analysis.html" class="link">Ver Análisis →</a>
             </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -143,6 +159,67 @@
             min-height: 100vh;
             padding: 100px 20px 40px;
             background: var(--bg);
+        }
+
+        .dashboard-layout {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .sidebar {
+            width: 240px;
+            min-width: 220px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--text);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 100px;
+            align-self: flex-start;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar li {
+            margin-bottom: 14px;
+        }
+
+        .sidebar a {
+            color: var(--text);
+            text-decoration: none;
+            display: block;
+            padding: 10px 12px;
+            border-radius: 12px;
+            transition: var(--transition);
+        }
+
+        .sidebar a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .sidebar a.active,
+        .sidebar a[aria-current="page"] {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .main-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .content-header {
+            margin-bottom: 2rem;
         }
 
         .tickets-section h1 {
@@ -264,6 +341,21 @@
         const fileInput = document.getElementById('fileInput');
         const preview = document.getElementById('preview');
         const previewImg = document.getElementById('previewImg');
+
+        const currentUser = localStorage.getItem('mangometro_user');
+        if (!currentUser) {
+            window.location.href = 'login.html';
+        }
+
+        const sidebarLinks = document.querySelectorAll('.sidebar a:not(.logout-link)');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                window.location.href = this.href;
+            });
+        });
+
+        setActiveSidebarLink();
 
         // Click to upload
         uploadZone.addEventListener('click', () => fileInput.click());
@@ -422,10 +514,30 @@
             localStorage.setItem(expensesKey, JSON.stringify(existingExpenses));
         }
 
-        document.getElementById('logout-btn').addEventListener('click', function() {
-            alert('Sesión cerrada correctamente');
-            window.location.href = 'index.html';
+        const logoutButtons = document.querySelectorAll('#logout-btn, .logout-link');
+        logoutButtons.forEach(btn => {
+            btn.addEventListener('click', function(event) {
+                event.preventDefault();
+                localStorage.removeItem('mangometro_user');
+                localStorage.removeItem('mangometro_token');
+                alert('Sesión cerrada correctamente');
+                window.location.href = 'login.html';
+            });
         });
+
+        function setActiveSidebarLink() {
+            const currentPath = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('.sidebar a');
+            links.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                    link.setAttribute('aria-current', 'page');
+                } else {
+                    link.classList.remove('active');
+                    link.removeAttribute('aria-current');
+                }
+            });
+        }
 
         // Set today's date as default
         document.getElementById('date').valueAsDate = new Date();

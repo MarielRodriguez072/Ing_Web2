@@ -80,6 +80,18 @@
                     </button>
                 </form>
 
+                <div id="destination-selection" class="destination-selection" hidden>
+                    <h2>¿A dónde querés ir?</h2>
+                    <div class="destination-buttons">
+                        <button type="button" class="btn-secondary destination-btn" data-href="dashboard.html">Dashboard</button>
+                        <button type="button" class="btn-secondary destination-btn" data-href="tickets.html">Cargar Tickets</button>
+                        <button type="button" class="btn-secondary destination-btn" data-href="analysis.html">Análisis de Gastos</button>
+                    </div>
+                    <p class="auth-footer-small" style="margin-top: 1rem;">
+                        <a href="index.html" class="link link-small">← Volver a inicio</a>
+                    </p>
+                </div>
+
                 <div class="auth-divider">o</div>
 
                 <p class="auth-footer">
@@ -204,6 +216,31 @@
             flex-direction: column;
             gap: 1.5rem;
             margin-bottom: 1.5rem;
+        }
+
+        .destination-selection {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.75rem;
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 199, 44, 0.15);
+        }
+
+        .destination-selection h2 {
+            margin-bottom: 1rem;
+            font-size: 1.35rem;
+        }
+
+        .destination-buttons {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .destination-btn {
+            min-width: 140px;
+            padding: 12px 16px;
         }
 
         .form-group {
@@ -496,30 +533,36 @@
             }
         }
 
-        // ========== SIMULAR LOGIN ==========
-        function simulateLogin(identifier, password) {
-            // Simulación: cualquier email/usuario + password válida = login exitoso
-            // En una app real, esto iría al backend
-            
-            // Crear objeto de usuario
-            const user = {
-                id: Math.random().toString(36).substr(2, 9),
-                identifier: identifier,
-                email: identifier.includes('@') ? identifier : `${identifier}@mangometro.local`,
-                username: identifier.includes('@') ? identifier.split('@')[0] : identifier,
-                loginTime: new Date().toISOString(),
-                rememberMe: rememberMeCheckbox.checked
-            };
+        // ========== LOGIN REAL CON USUARIOS GUARDADOS ==========
+        function getStoredUsers() {
+            const usersStr = localStorage.getItem('mangometro_users');
+            return usersStr ? JSON.parse(usersStr) : [];
+        }
 
-            // Guardar en localStorage
-            localStorage.setItem('mangometro_user', JSON.stringify(user));
-            localStorage.setItem('mangometro_token', `token_${user.id}_${Date.now()}`);
+        function findStoredUser(identifier, password) {
+            const users = getStoredUsers();
+            return users.find(user =>
+                (user.email === identifier || user.username === identifier) &&
+                user.password === password
+            );
+        }
+
+        function simulateLogin(identifier, password) {
+            const existingUser = findStoredUser(identifier, password);
+            if (!existingUser) {
+                return null;
+            }
+
+            localStorage.setItem('mangometro_user', JSON.stringify(existingUser));
+            localStorage.setItem('mangometro_token', `token_${existingUser.id}_${Date.now()}`);
 
             if (rememberMeCheckbox.checked) {
                 localStorage.setItem('mangometro_remember_identifier', identifier);
+            } else {
+                localStorage.removeItem('mangometro_remember_identifier');
             }
 
-            return user;
+            return existingUser;
         }
 
         // ========== MANEJAR SUBMIT DEL FORMULARIO ==========
@@ -543,15 +586,16 @@
                     const identifier = identifierInput.value.trim();
                     const password = passwordInput.value;
 
-                    // Simular login exitoso
                     const user = simulateLogin(identifier, password);
+                    if (!user) {
+                        showAlert('Email/usuario o contraseña incorrectos', 'error');
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Iniciar Sesión';
+                        return;
+                    }
 
-                    showAlert(`¡Bienvenido, ${user.username}! Redirigiendo...`, 'success');
-
-                    // Redirigir después de 1 segundo
-                    setTimeout(() => {
-                        window.location.href = 'dashboard.html';
-                    }, 1000);
+                    showAlert(`¡Bienvenido, ${user.username}! Elige a dónde ir.`, 'success');
+                    showDestinationSelection();
 
                 } catch (error) {
                     showAlert('Error al iniciar sesión. Intenta de nuevo.', 'error');
@@ -572,12 +616,10 @@
                 passwordInput.focus();
             }
 
-            // Si ya hay sesión activa, redirigir a dashboard
+            // Si ya hay sesión activa, mostrar opciones de navegación
             if (existingUser) {
-                showAlert('Ya tienes una sesión activa. Redirigiendo...', 'info');
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1500);
+                showAlert('Ya tienes una sesión activa. Elige a dónde ir.', 'info');
+                showDestinationSelection();
             }
         });
 
@@ -593,6 +635,23 @@
         passwordInput.addEventListener('input', function() {
             submitBtn.disabled = !identifierInput.value.trim() || !this.value;
         });
+
+        function showDestinationSelection() {
+            const destinationSection = document.getElementById('destination-selection');
+            if (!destinationSection) return;
+
+            destinationSection.hidden = false;
+            document.getElementById('login-form').hidden = true;
+            document.querySelector('.auth-divider').hidden = true;
+            document.querySelector('.auth-footer').hidden = true;
+            document.querySelector('.auth-footer-small').hidden = true;
+
+            document.querySelectorAll('.destination-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    window.location.href = this.dataset.href;
+                });
+            });
+        }
 
         console.log('🥭 Login Mangómetro cargado correctamente');
     </script>

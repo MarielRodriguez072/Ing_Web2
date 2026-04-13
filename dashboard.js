@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ========== MOSTRAR EN PANTALLA ==========
     displayStats(stats);
     displayRecentExpenses(expenses);
+    setActiveSidebarLink();
 
     // ========== EVENTOS ==========
     setupEventListeners();
@@ -138,9 +139,23 @@ function setupEventListeners() {
             localStorage.removeItem('mangometro_user');
             localStorage.removeItem('mangometro_token');
             alert('Sesión cerrada correctamente');
-            window.location.href = 'index.html';
+            window.location.href = 'login.html';
         });
     }
+}
+
+function setActiveSidebarLink() {
+    const currentPath = window.location.pathname.split('/').pop();
+    const links = document.querySelectorAll('.sidebar a');
+    links.forEach(link => {
+        if (link.getAttribute('href') === currentPath) {
+            link.classList.add('active');
+            link.setAttribute('aria-current', 'page');
+        } else {
+            link.classList.remove('active');
+            link.removeAttribute('aria-current');
+        }
+    });
 }
 
 // ========== LOGGING ==========

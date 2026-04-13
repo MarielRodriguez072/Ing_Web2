@@ -24,11 +24,25 @@
 
     <!-- Analysis Content -->
     <section class="analysis-section" role="main">
-        <div class="container">
-            <h1>📈 Análisis de Gastos</h1>
-            <p class="page-subtitle">Visualiza tus patrones de consumo y obtén insights sobre tus gastos</p>
+        <div class="dashboard-layout">
+            <aside class="sidebar">
+                <h2>🥭 Mangómetro</h2>
+                <ul>
+                    <li><a href="dashboard.html">Dashboard</a></li>
+                    <li><a href="tickets.html">Cargar tickets</a></li>
+                    <li><a href="analysis.html">Análisis de gastos</a></li>
+                    <li><a href="#" class="logout-link">Logout</a></li>
+                </ul>
+            </aside>
 
-            <!-- Filters -->
+            <div class="main-content">
+                <div class="content-header">
+                    <h1>📈 Análisis de Gastos</h1>
+                    <p class="page-subtitle">Visualiza tus patrones de consumo y obtén insights sobre tus gastos</p>
+                </div>
+
+                <div class="container">
+                    <!-- Filters -->
             <div class="filters-section">
                 <div class="filter-group">
                     <label for="month-filter">Mes:</label>
@@ -138,6 +152,8 @@
                 <a href="tickets.html" class="link">Cargar Ticket →</a>
             </div>
         </div>
+            </div>
+        </div>
     </section>
 
     <!-- Footer -->
@@ -152,6 +168,67 @@
             min-height: 100vh;
             padding: 100px 20px 40px;
             background: var(--bg);
+        }
+
+        .dashboard-layout {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .sidebar {
+            width: 240px;
+            min-width: 220px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--text);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 100px;
+            align-self: flex-start;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar li {
+            margin-bottom: 14px;
+        }
+
+        .sidebar a {
+            color: var(--text);
+            text-decoration: none;
+            display: block;
+            padding: 10px 12px;
+            border-radius: 12px;
+            transition: var(--transition);
+        }
+
+        .sidebar a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .sidebar a.active,
+        .sidebar a[aria-current="page"] {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .main-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .content-header {
+            margin-bottom: 2rem;
         }
 
         .analysis-section h1 {
@@ -415,12 +492,53 @@
                 return;
             }
 
-            const expenses = getUserExpenses(user.id);
+            let expenses = getUserExpenses(user.id);
+            if (!expenses.length) {
+                expenses = initializeSampleExpenses(user.id);
+            }
+
             renderSummary(expenses);
             renderCharts(expenses);
             renderRecentTable(expenses);
             populateMonthFilter(expenses);
+            setupPageNavigation();
         });
+
+        function setupPageNavigation() {
+            const logoutButtons = document.querySelectorAll('#logout-btn, .logout-link');
+            logoutButtons.forEach(btn => {
+                btn.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    localStorage.removeItem('mangometro_user');
+                    localStorage.removeItem('mangometro_token');
+                    window.location.href = 'login.html';
+                });
+            });
+
+            const navLinks = document.querySelectorAll('.sidebar a:not(.logout-link)');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    window.location.href = this.href;
+                });
+            });
+
+            setActiveSidebarLink();
+        }
+
+        function setActiveSidebarLink() {
+            const currentPath = window.location.pathname.split('/').pop();
+            const links = document.querySelectorAll('.sidebar a');
+            links.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                    link.setAttribute('aria-current', 'page');
+                } else {
+                    link.classList.remove('active');
+                    link.removeAttribute('aria-current');
+                }
+            });
+        }
 
         function getCurrentUser() {
             const userStr = localStorage.getItem('mangometro_user');
@@ -431,6 +549,29 @@
             const key = `mangometro_expenses_${userId}`;
             const data = localStorage.getItem(key);
             return data ? JSON.parse(data) : [];
+        }
+
+        function initializeSampleExpenses(userId) {
+            const sampleExpenses = [
+                { date: addDays(-2), commerce: 'Supermercado Verde', category: 'supermercado', amount: 540.75 },
+                { date: addDays(-8), commerce: 'Transporte Plus', category: 'transporte', amount: 120.00 },
+                { date: addDays(-10), commerce: 'Cine Plaza', category: 'entretenimiento', amount: 210.50 },
+                { date: addDays(-14), commerce: 'Cafetería Mango', category: 'comida', amount: 85.30 },
+                { date: addDays(-20), commerce: 'Servicios Hogar', category: 'servicios', amount: 320.00 },
+                { date: addDays(-32), commerce: 'Mercado Central', category: 'supermercado', amount: 675.40 },
+                { date: addDays(-40), commerce: 'Taxi Express', category: 'transporte', amount: 95.00 },
+                { date: addDays(-45), commerce: 'Concierto Live', category: 'entretenimiento', amount: 420.00 }
+            ];
+
+            const key = `mangometro_expenses_${userId}`;
+            localStorage.setItem(key, JSON.stringify(sampleExpenses));
+            return sampleExpenses;
+        }
+
+        function addDays(days) {
+            const date = new Date();
+            date.setDate(date.getDate() + days);
+            return date.toISOString();
         }
 
         function renderSummary(expenses) {
@@ -598,10 +739,6 @@
             renderRecentTable(expenses);
         }
 
-        document.getElementById('logout-btn').addEventListener('click', function() {
-            alert('Sesión cerrada correctamente');
-            window.location.href = 'index.html';
-        });
     </script>
 </body>
 </html>

@@ -42,6 +42,10 @@
         .sidebar a:hover {
             background: rgba(255, 255, 255, 0.2);
         }
+        .sidebar a.active,
+        .sidebar a[aria-current="page"] {
+            background: rgba(255, 255, 255, 0.25);
+        }
         .main-content {
             flex: 1;
             display: flex;
@@ -152,7 +156,7 @@
         <aside class="sidebar">
             <h2>🥭 Mangómetro</h2>
             <ul>
-                <li><a href="#dashboard">Dashboard</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
                 <li><a href="tickets.html">Cargar tickets</a></li>
                 <li><a href="analysis.html">Análisis de gastos</a></li>
                 <li><a href="#" id="logout-btn">Logout</a></li>
