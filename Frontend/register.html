@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🥭</text></svg>">
+    <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
 </head>
 <body>
     <!-- Navbar -->
@@ -478,7 +479,19 @@
         }
 
         function isValidPassword(password) {
-            return password.length >= 6;
+            const errors = [];
+            if (password.length < 8) return false;
+            if (!/[A-Z]/.test(password)) return false;
+            if (!/[0-9]/.test(password)) return false;
+            return true;
+        }
+
+        function getPasswordErrors(password) {
+            const errors = [];
+            if (password.length < 8) errors.push('Mínimo 8 caracteres');
+            if (!/[A-Z]/.test(password)) errors.push('Mayúscula requerida');
+            if (!/[0-9]/.test(password)) errors.push('Número requerido');
+            return errors;
         }
 
         function validateForm() {
@@ -517,7 +530,8 @@
             }
 
             if (!isValidPassword(password)) {
-                showAlert('La contraseña debe tener al menos 6 caracteres', 'error');
+                const errors = getPasswordErrors(password);
+                showAlert('Contraseña débil: ' + errors.join(', '), 'error');
                 return false;
             }
 
@@ -569,12 +583,13 @@
         }
 
         // ========== GUARDAR USUARIO EN LOCALSTORAGE ==========
-        function saveUser(username, email, password) {
+        async function saveUser(username, email, password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
             const newUser = {
                 id: Math.random().toString(36).substr(2, 9),
                 username: username,
                 email: email,
-                password: password, // En una app real, esto estaría hasheado en backend
+                password: hashedPassword,
                 createdAt: new Date().toISOString()
             };
 
@@ -607,32 +622,22 @@
         }
 
         // ========== MANEJAR SUBMIT DEL FORMULARIO ==========
-        registerForm.addEventListener('submit', function(e) {
+        registerForm.addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            // Validar formulario
-            if (!validateForm()) {
-                return;
-            }
+            if (!validateForm()) return;
 
-            // Desabilitar botón durante registro
             submitBtn.disabled = true;
             submitBtn.textContent = '⏳ Creando cuenta...';
 
-            // Simular tiempo de red (500-1000ms)
-            const delay = Math.random() * 500 + 500;
-            
-            setTimeout(() => {
+            setTimeout(async () => {
                 try {
                     const username = usernameInput.value.trim();
                     const email = emailInput.value.trim();
                     const password = passwordInput.value;
 
-                    // Guardar usuario
-                    if (saveUser(username, email, password)) {
-                        showAlert(`¡Bienvenido, ${username}! Tu cuenta fue creada correctamente. Redirigiendo a login...`, 'success');
-
-                        // Redirigir a login después de 2 segundos
+                    if (await saveUser(username, email, password)) {
+                        showAlert(`¡Bienvenido, ${username}! Redirigiendo a login...`, 'success');
                         setTimeout(() => {
                             window.location.href = 'login.html';
                         }, 2000);
@@ -640,13 +645,12 @@
                         submitBtn.disabled = false;
                         submitBtn.textContent = 'Crear Cuenta';
                     }
-
                 } catch (error) {
-                    showAlert('Error al crear la cuenta. Intenta de nuevo.', 'error');
+                    showAlert('Error al crear la cuenta.', 'error');
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'Crear Cuenta';
                 }
-            }, delay);
+            }, 500);
         });
 
         // ========== VALIDACIÓN EN TIEMPO REAL ==========

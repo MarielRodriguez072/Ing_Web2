@@ -1,6 +1,19 @@
 // Dashboard - Mangómetro
 // Funcionalidades: mostrar usuario, calcular y mostrar estadísticas de gastos
 
+const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutos
+let sessionTimer = null;
+
+function resetSessionTimer() {
+    clearTimeout(sessionTimer);
+    sessionTimer = setTimeout(() => {
+        localStorage.removeItem('mangometro_user');
+        localStorage.removeItem('mangometro_token');
+        alert('Tu sesión ha expirado por inactividad');
+        window.location.href = 'login.html';
+    }, SESSION_TIMEOUT);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // ========== OBTENER USUARIO DESDE LOCALSTORAGE ==========
     const user = getCurrentUser();
@@ -9,6 +22,11 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = 'login.html';
         return;
     }
+
+    // Iniciar session timeout
+    resetSessionTimer();
+    document.addEventListener('click', resetSessionTimer);
+    document.addEventListener('keypress', resetSessionTimer);
 
     // Mostrar nombre del usuario
     displayUserName(user);

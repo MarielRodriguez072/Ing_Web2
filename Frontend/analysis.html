@@ -484,6 +484,19 @@
     </style>
 
     <script>
+        const SESSION_TIMEOUT = 30 * 60 * 1000;
+        let sessionTimer = null;
+
+        function resetSessionTimer() {
+            clearTimeout(sessionTimer);
+            sessionTimer = setTimeout(() => {
+                localStorage.removeItem('mangometro_user');
+                localStorage.removeItem('mangometro_token');
+                alert('Tu sesión ha expirado por inactividad');
+                window.location.href = 'login.html';
+            }, SESSION_TIMEOUT);
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const user = getCurrentUser();
             if (!user) {
@@ -491,6 +504,10 @@
                 window.location.href = 'login.html';
                 return;
             }
+
+            resetSessionTimer();
+            document.addEventListener('click', resetSessionTimer);
+            document.addEventListener('keypress', resetSessionTimer);
 
             let expenses = getUserExpenses(user.id);
             if (!expenses.length) {

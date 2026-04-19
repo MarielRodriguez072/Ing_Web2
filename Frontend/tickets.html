@@ -22,6 +22,9 @@
         </div>
     </nav>
 
+    <!-- Alert Container -->
+    <div id="alert-container" style="position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; max-width: 400px;"></div>
+
     <!-- Tickets Content -->
     <section class="tickets-section" role="main">
         <div class="dashboard-layout">
@@ -334,9 +337,101 @@
                 padding: 1.5rem;
             }
         }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
     </style>
 
     <script>
+        const SESSION_TIMEOUT = 30 * 60 * 1000;
+        let sessionTimer = null;
+
+        function resetSessionTimer() {
+            clearTimeout(sessionTimer);
+            sessionTimer = setTimeout(() => {
+                localStorage.removeItem('mangometro_user');
+                localStorage.removeItem('mangometro_token');
+                showAlert('Tu sesión ha expirado por inactividad', 'error');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            }, SESSION_TIMEOUT);
+        }
+
+        function showAlert(message, type = 'info') {
+            const container = document.getElementById('alert-container');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            
+            const icons = {
+                error: '❌',
+                success: '✅',
+                warning: '⚠️',
+                info: 'ℹ️'
+            };
+            
+            alert.innerHTML = `
+                <span>${icons[type]}</span>
+                <span>${message}</span>
+            `;
+            alert.style.cssText = `
+                padding: 12px 16px;
+                border-radius: 8px;
+                display: flex;
+                gap: 12px;
+                align-items: center;
+                animation: slideIn 0.3s ease;
+                cursor: pointer;
+            `;
+
+            const bgColors = {
+                error: '#f8d7da',
+                success: '#d4edda',
+                warning: '#fff3cd',
+                info: '#d1ecf1'
+            };
+
+            const textColors = {
+                error: '#721c24',
+                success: '#155724',
+                warning: '#856404',
+                info: '#0c5460'
+            };
+
+            alert.style.background = bgColors[type];
+            alert.style.color = textColors[type];
+            alert.style.border = `1px solid ${textColors[type]}33`;
+            alert.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+
+            container.appendChild(alert);
+
+            alert.addEventListener('click', () => alert.remove());
+
+            setTimeout(() => {
+                alert.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => alert.remove(), 300);
+            }, 5000);
+        }
+
         const uploadZone = document.getElementById('uploadZone');
         const fileInput = document.getElementById('fileInput');
         const preview = document.getElementById('preview');
@@ -346,6 +441,10 @@
         if (!currentUser) {
             window.location.href = 'login.html';
         }
+
+        resetSessionTimer();
+        document.addEventListener('click', resetSessionTimer);
+        document.addEventListener('keypress', resetSessionTimer);
 
         const sidebarLinks = document.querySelectorAll('.sidebar a:not(.logout-link)');
         sidebarLinks.forEach(link => {
@@ -389,11 +488,11 @@
                 reader.onload = (e) => {
                     previewImg.src = e.target.result;
                     preview.style.display = 'block';
-                    alert('📸 Imagen cargada\n\n⚠️ La extracción con IA está en desarrollo');
+                    showAlert('📸 Imagen cargada. La extracción con IA está en desarrollo.', 'info');
                 };
                 reader.readAsDataURL(file);
             } else {
-                alert('Por favor, selecciona una imagen válida');
+                showAlert('Por favor, selecciona una imagen válida', 'error');
             }
         }
 
@@ -415,18 +514,18 @@
             const description = descriptionInput.value.trim();
 
             if (!commerce || !amount || !date || !category) {
-                alert('Por favor, completa todos los campos obligatorios');
+                showAlert('Por favor, completa todos los campos obligatorios', 'error');
                 return;
             }
 
             if (amount <= 0) {
-                alert('El monto debe ser mayor a 0');
+                showAlert('El monto debe ser mayor a 0', 'error');
                 return;
             }
 
             const userStr = localStorage.getItem('mangometro_user');
             if (!userStr) {
-                alert('No hay sesión activa. Por favor, inicia sesión.');
+                showAlert('No hay sesión activa. Por favor, inicia sesión.', 'error');
                 window.location.href = 'login.html';
                 return;
             }
@@ -444,7 +543,7 @@
             };
 
             saveExpense(expense);
-            alert('✅ Gasto guardado correctamente');
+            showAlert('✅ Gasto guardado correctamente', 'success');
             this.reset();
             preview.style.display = 'none';
             dateInput.valueAsDate = new Date();
@@ -453,7 +552,7 @@
         processButton.addEventListener('click', () => {
             const file = fileInput.files[0];
             if (!file) {
-                alert('Selecciona una imagen antes de procesar el ticket.');
+                showAlert('Selecciona una imagen antes de procesar el ticket.', 'error');
                 return;
             }
 
