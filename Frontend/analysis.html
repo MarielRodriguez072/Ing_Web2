@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="components/dashboard-sidebar.css">
-    <link rel="stylesheet" href="fintech-analysis.css">
+    <link rel="stylesheet" href="analysis.css">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🥭</text></svg>">
 </head>
 <body>
@@ -45,11 +45,41 @@
               <h1>Análisis de Gastos</h1>
               <p>Visualiza tus patrones de consumo y obtén insights</p>
             </div>
-            <div class="header-right">
-              <button class="btn btn-secondary btn-sm" id="user-profile">
+<div class="header-right">
+              <button class="btn btn-secondary btn-sm user-profile-btn" id="user-profile">
                 👤 <span id="user-name">Usuario</span>
+                <span id="role-indicator" class="role-badge cliente" style="margin-left: 0.5rem; font-size: 0.75rem; padding: 0.2rem 0.4rem; border-radius: 10px; background: rgba(46,204,113,0.2); color: #2ECC71;"></span>
               </button>
             </div>
+
+            <style>
+                .user-profile-btn {
+                    display: flex !important;
+                    align-items: center !important;
+                    gap: 0.5rem !important;
+                    padding: 8px 16px !important;
+                    border-radius: 20px !important;
+                    font-weight: 500 !important;
+                    transition: all 0.3s !important;
+                    white-space: nowrap !important;
+                }
+                .user-profile-btn:hover {
+                    background: rgba(255,199,44,0.2) !important;
+                    transform: translateY(-1px) !important;
+                    box-shadow: 0 4px 12px rgba(255,199,44,0.3) !important;
+                }
+                .role-badge {
+                    font-size: 0.75rem !important;
+                    padding: 0.25rem 0.5rem !important;
+                    border-radius: 12px !important;
+                    font-weight: 600 !important;
+                }
+                .role-badge.cliente { background: rgba(46,204,113,0.2) !important; color: #2ECC71 !important; }
+                .role-badge.asesor { background: rgba(52,152,219,0.2) !important; color: #3498DB !important; }
+            </style>
+
+
+
           </header>
 
           <!-- Page Content -->
@@ -85,24 +115,41 @@
                     </div>
 
                     <!-- Fintech KPI Cards -->
-    <div class="fintech-kpis">
-        <div class="kpi-card total">
-            <div class="kpi-icon">💰</div>
-            <div class="kpi-content">
-                <h3>Total Gastado</h3>
-                <div class="kpi-metric" id="total-gastado">$0.00</div>
-                <p class="kpi-label">Histórico</p>
-            </div>
-        </div>
-        
-        <div class="kpi-card average">
-            <div class="kpi-icon">📊</div>
-            <div class="kpi-content">
-                <h3>Promedio</h3>
-                <div class="kpi-metric" id="promedio-gasto">$0.00</div>
-                <p class="kpi-label">Por transacción</p>
-            </div>
-        </div>
+<div class="fintech-kpis">
+  <!-- Card especial asesor - INLINE -->
+  <div id="asesor-card" class="kpi-card asesor-global" style="display:none; background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%); color: white; border: none; margin-bottom: 1rem;">
+    <div class="kpi-icon" style="background: rgba(255,255,255,0.2); border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem;">🌍</div>
+    <div class="kpi-content">
+      <h3 style="margin: 0 0 0.5rem 0; color: white;">Análisis Global</h3>
+      <div class="kpi-metric" id="global-top-cat" style="font-size: 2rem;">--</div>
+      <div class="kpi-submetric" id="global-avg" style="font-size: 1.2rem; opacity: 0.9;">$0.00</div>
+      <p class="kpi-label" style="color: rgba(255,255,255,0.9); font-size: 0.85rem;">Top categoría | Promedio gasto</p>
+      <div id="asesor-recomendacion" style="margin-top: 1rem; font-size: 0.9rem; padding: 0.75rem 1rem; background: rgba(255,255,255,0.15); border-radius: 8px; font-style: italic; border-left: 4px solid rgba(255,255,255,0.4);">
+        💡 Enfócate en reducir <strong id="asesor-cat-sugerida" style="color: #FFF9F1;">supermercado</strong>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- Cards normales -->
+  <div class="kpi-card total">
+    <div class="kpi-icon">💰</div>
+    <div class="kpi-content">
+      <h3>Total Gastado</h3>
+      <div class="kpi-metric" id="total-gastado">$0.00</div>
+      <p class="kpi-label">Histórico</p>
+    </div>
+  </div>
+  
+  <div class="kpi-card average">
+    <div class="kpi-icon">📊</div>
+    <div class="kpi-content">
+      <h3>Promedio</h3>
+      <div class="kpi-metric" id="promedio-gasto">$0.00</div>
+      <p class="kpi-label">Por transacción</p>
+    </div>
+  </div>
+
         
         <div class="kpi-card category">
             <div class="kpi-icon">🎯</div>
@@ -202,9 +249,11 @@
     </footer>
 
 <script src="auth.js"></script>
+    <script src="roles.js"></script>
     <script src="expenses.js"></script>
     <script src="analysis.js" defer></script>
     <script src="auth-events.js"></script>
+
 </body>
 </html>
 

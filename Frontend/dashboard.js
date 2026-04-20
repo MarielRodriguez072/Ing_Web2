@@ -15,8 +15,14 @@ function resetSessionTimer() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // ========== ROLES + SETUP ==========
+    setupRoleUI();
+    updateSidebarByRole();
+
+    
     // ========== OBTENER USUARIO DESDE LOCALSTORAGE ==========
     const user = getCurrentUser();
+
     if (!user) {
         alert('No hay sesión activa. Redirigiendo al login...');
         window.location.href = 'login.html';
@@ -125,6 +131,14 @@ function formatCategory(category) {
 }
 
 function setupEventListeners() {
+    if (isAsesor()) {
+        // Asesor NO puede agregar gastos
+        const addBtn = document.getElementById('add-expense-btn');
+        if (addBtn) addBtn.style.display = 'none';
+        return;
+    }
+    
+    // Cliente: eventos normales
     const addBtn = document.getElementById('add-expense-btn');
     if (addBtn) {
         addBtn.addEventListener('click', () => window.location.href = 'tickets.html');
@@ -144,6 +158,7 @@ function setupEventListeners() {
         });
     });
 }
+
 
 function setActiveSidebarLink() {
     const currentPath = window.location.pathname.split('/').pop();

@@ -17,10 +17,31 @@
                 <h2>🥭 Mangómetro</h2>
             </a>
             <div class="nav-buttons">
-                <a href="register.html" class="btn-primary">Registrarse</a>
+                <a href="register.html" class="btn-primary register-btn-large">
+                    <span style="font-size: 1.1rem;">Registrarse</span>
+                </a>
             </div>
         </div>
     </nav>
+
+    <style>
+        .register-btn-large {
+            border-radius: 50px !important;
+            padding: 16px 32px !important;
+            font-size: 1.1rem !important;
+            font-weight: 700 !important;
+            min-height: 56px !important;
+            box-shadow: 0 8px 25px rgba(255, 199, 44, 0.4) !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .register-btn-large:hover {
+            transform: translateY(-3px) scale(1.05) !important;
+            box-shadow: 0 12px 35px rgba(255, 199, 44, 0.6) !important;
+            border-radius: 50px !important;
+        }
+    </style>
+
 
     <!-- Login Section -->
     <section class="auth-section" role="main">

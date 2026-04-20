@@ -48,11 +48,13 @@
           <h1>Carga de Tickets</h1>
           <p>Sube recibos para registrar gastos automáticamente</p>
         </div>
-        <div class="header-right">
+<div class="header-right">
           <button class="btn btn-secondary btn-sm" id="user-profile">
             👤 <span id="user-name">Usuario</span>
+            <span id="role-indicator" class="role-badge cliente" style="margin-left: 0.5rem; font-size: 0.75rem; padding: 0.2rem 0.4rem; border-radius: 10px; background: rgba(46,204,113,0.2); color: #2ECC71;"></span>
           </button>
         </div>
+
       </header>
 
       <!-- Page Content -->
@@ -150,9 +152,12 @@
     <!-- Scripts -->
 
 <script src="auth.js"></script>
+    <script src="roles.js"></script>
     <script src="expenses.js"></script>
     <script src="auth-events.js"></script>
     <script src="tickets.js"></script>
+
+
 </body>
 </html>
 

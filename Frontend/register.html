@@ -676,12 +676,23 @@
 
             setTimeout(() => {
                 try {
+
                     const username = usernameInput.value.trim();
                     const email = emailInput.value.trim().toLowerCase();
                     const role = roleSelect.value;
                     const password = passwordInput.value;
 
-                    if (saveUser(username, email, role, password)) {
+                    const newUser = {
+                        id: Math.random().toString(36).substr(2, 9),
+                        username: username,
+                        email: email,
+                        role: role,
+                        password: password,
+                        createdAt: new Date().toISOString()
+                    };
+
+                    if (saveUser(newUser)) {
+
                         showAlert(`¡Bienvenido, ${username}! Redirigiendo a login...`, 'success');
                         setTimeout(() => {
                             window.location.href = 'login.html';

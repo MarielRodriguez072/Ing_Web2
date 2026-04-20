@@ -6,10 +6,38 @@
 
 // Inicialización página
 document.addEventListener('DOMContentLoaded', function() {
+  setupRoleUI();
+  updateSidebarByRole();
   requireAuth();
+  populateMonthFilter();
   initAnalysis();
   resetSessionTimer();
 });
+
+// Poblar filtro meses con datos reales
+function populateMonthFilter() {
+  const select = document.getElementById('month-filter');
+  if (!select) return;
+
+  const user = getCurrentUser();
+  const expenses = getExpenses(user.id) || [];
+  const byMes = getGastoPorMes(expenses);
+  const months = Object.keys(byMes).sort().reverse();
+
+  const allMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  select.innerHTML = '<option value="">Todos los meses</option>';
+  allMonths.forEach((monthName, index) => {
+    const monthKey = `2024-${String(index + 1).padStart(2, '0')}`;
+    const option = document.createElement('option');
+    option.value = monthKey;
+    option.textContent = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+    select.appendChild(option);
+  });
+
+}
+
+
+
 
 // 1. TOTAL GASTADO
 function getTotalGastado(expenses) {
@@ -63,6 +91,22 @@ function getPromedioGasto(expenses) {
 async function initAnalysis() {
   try {
     const user = getCurrentUser();
+    const role = getUserRole();
+    
+    // Vista especial asesor
+    if (role === 'asesor') {
+      const asesorCard = document.querySelector('#asesor-card');
+      if (asesorCard) asesorCard.style.display = 'flex';
+      
+      const topCat = getCategoriaMayorGasto(getGastoPorCategoria(getExpenses(user.id) || []));
+      document.getElementById('global-top-cat').textContent = topCat.cat || 'Sin datos';
+      document.getElementById('global-avg').textContent = `$${getPromedioGasto(getExpenses(user.id) || [])}`;
+      document.getElementById('asesor-cat-sugerida').textContent = topCat.cat || 'gastos';
+      
+      document.querySelector('.content-header p').textContent = 'Vista de asesor: Análisis profesional de patrones de consumo globales';
+      return;
+    }
+
     const expenses = getExpenses(user.id) || [];
     
     // Render métricas

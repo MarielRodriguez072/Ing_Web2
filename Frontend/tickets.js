@@ -3,9 +3,12 @@
 // import replaced - using globals from expenses.js
 
 document.addEventListener('DOMContentLoaded', function() {
+  setupRoleUI();
+  updateSidebarByRole();
   requireAuth();
   initTicketsPage();
 });
+
 
 function requireAuth() {
   if (!getCurrentUser()) {
@@ -18,6 +21,19 @@ function requireAuth() {
 function initTicketsPage() {
   const user = getCurrentUser();
   resetSessionTimer();
+  
+  // Ocultar tickets para asesor
+  if (isAsesor()) {
+    const uploadZone = document.getElementById('uploadZone');
+    const manualForm = document.getElementById('manual-expense-form');
+    const recentExpenses = document.getElementById('recent-expenses');
+    if (uploadZone) uploadZone.style.display = 'none';
+    if (manualForm) manualForm.style.display = 'none';
+    if (recentExpenses) {
+      recentExpenses.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--text-light);"><h3>Vista de Asesor</h3><p>No tienes acceso a carga de tickets.<br><a href="analysis.html">→ Ir a Análisis</a></p></div>';
+    }
+    return;
+  }
 
   // Sidebar active
   setActiveSidebarLink('tickets.html');
@@ -31,6 +47,7 @@ function initTicketsPage() {
   // Lista recientes
   displayRecentExpenses(user.id);
 }
+
 
 function setupManualForm(userId) {
   const form = document.getElementById('manual-expense-form');
