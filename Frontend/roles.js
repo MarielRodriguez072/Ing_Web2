@@ -2,7 +2,7 @@
 // Cliente vs Asesor UI/Logic
 
 function getUserRole() {
-  const user = getCurrentUser();
+  //const user = getCurrentUser();
   return user?.role || 'cliente'; // default cliente
 }
 
