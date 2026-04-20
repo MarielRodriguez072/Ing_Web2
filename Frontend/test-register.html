@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Test Registro</title>
+    <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
+    <script src="debug.js"></script>
+</head>
+<body>
+    <h1>Test Registro Mangómetro</h1>
+    <button onclick="testRegister()">Probar Registro</button>
+    <div id="result"></div>
+
+    <script>
+        async function testRegister() {
+            const result = document.getElementById('result');
+
+            try {
+                // Limpiar localStorage primero
+                localStorage.removeItem('mangometro_users');
+
+                // Función saveUser copiada del register.html
+                async function saveUser(username, email, role, password) {
+                    if (typeof bcrypt === 'undefined' || !bcrypt.hash) {
+                        throw new Error('bcrypt no disponible');
+                    }
+
+                    const hashedPassword = await bcrypt.hash(password, 10);
+                    const newUser = {
+                        id: Math.random().toString(36).substr(2, 9),
+                        username: username,
+                        email: email,
+                        role: role,
+                        password: hashedPassword,
+                        createdAt: new Date().toISOString()
+                    };
+
+                    let users = [];
+                    const existingUsersStr = localStorage.getItem('mangometro_users');
+                    if (existingUsersStr) {
+                        users = JSON.parse(existingUsersStr);
+                    }
+
+                    users.push(newUser);
+                    localStorage.setItem('mangometro_users', JSON.stringify(users));
+
+                    return true;
+                }
+
+                // Probar registro
+                const success = await saveUser('testuser', 'test@example.com', 'cliente', 'password123');
+                result.innerHTML = success ? '✅ Registro exitoso' : '❌ Registro falló';
+
+                // Verificar que se guardó
+                const users = JSON.parse(localStorage.getItem('mangometro_users') || '[]');
+                result.innerHTML += `<br>Usuarios guardados: ${users.length}`;
+
+            } catch (error) {
+                result.innerHTML = `❌ Error: ${error.message}`;
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>

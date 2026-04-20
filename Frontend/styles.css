@@ -127,10 +127,32 @@ body {
   font-size: 1.8rem;
 }
 
+
+.logo {
+  text-decoration: none;
+}
+
 .nav-buttons {
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
 }
+
+.nav-buttons button,
+.nav-buttons .btn {
+  padding: 24px 44px !important;
+  font-size: 1.25rem !important;
+  min-height: 64px !important;
+  border-radius: 30px !important;
+}
+
+@media (max-width: 768px) {
+  .nav-buttons button,
+  .nav-buttons .btn {
+    padding: 16px 28px !important;
+    font-size: 1.05rem !important;
+  }
+}
+
 
 /* ========== BOTONES REUTILIZABLES ========== */
 .btn {
@@ -138,12 +160,12 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 12px 24px;
+  padding: 16px 32px;
   border: none;
-  border-radius: var(--border-radius-md);
+  border-radius: 50px; /* Más redondo */
   font-family: 'Roboto', sans-serif;
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 1.1rem;
   cursor: pointer;
   text-decoration: none;
   transition: var(--transition);
@@ -171,6 +193,14 @@ body {
 .btn > * {
   position: relative;
   z-index: 1;
+}
+
+/* Botón grande */
+.btn-large {
+  padding: 20px 40px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  min-width: 200px;
 }
 
 /* Variantes de Botón */
@@ -871,4 +901,185 @@ body {
     background: transparent !important;
     gap: var(--spacing-md) !important;
   }
+}
+
+/* ===== TABLAS RESPONSIVE ===== */
+@media (max-width: 768px) {
+  table {
+    font-size: 0.875rem;
+  }
+  
+  th, td {
+    padding: 8px 4px;
+  }
+  
+  /* Tabla responsive con scroll horizontal */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--border-radius-sm);
+    box-shadow: var(--shadow-xs);
+  }
+  
+  /* Opción: Convertir tabla a cards en móvil */
+  table.card-view {
+    width: 100%;
+    border-collapse: collapse;
+    border: none;
+    margin: 0;
+  }
+  
+  table.card-view tbody tr {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--border-radius-sm);
+    background: var(--white);
+    box-shadow: var(--shadow-xs);
+  }
+  
+  table.card-view th {
+    display: none;
+  }
+  
+  table.card-view td {
+    padding: 4px 8px;
+    border: none;
+  }
+  
+  table.card-view td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--text-light);
+    display: block;
+    margin-bottom: 4px;
+  }
+}
+
+/* ===== SIDEBAR COLAPSABLE ===== */
+.sidebar.collapsed {
+  width: 60px;
+  position: fixed;
+  left: 0;
+  top: 80px;
+  height: calc(100vh - 80px);
+  overflow: hidden;
+}
+
+.sidebar.collapsed .sidebar-nav > div:not(:first-child) {
+  display: none;
+}
+
+.sidebar.collapsed svg {
+  margin: 0;
+}
+
+.sidebar-toggle {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 8px 12px;
+  color: var(--text);
+  transition: var(--transition);
+  border-radius: var(--border-radius-sm);
+}
+
+.sidebar-toggle:hover {
+  background: var(--bg-secondary);
+}
+
+/* ===== ANIMACIONES PARA ALERTAS ===== */
+@keyframes slideIn {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+}
+
+/* ===== ESTADO VACÍO ===== */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-light);
+}
+
+.empty-state h2 {
+  color: var(--text);
+  margin: 0 0 12px 0;
+}
+
+.empty-state p {
+  margin: 0 0 24px 0;
+}
+
+/* ===== CONFIRMACIÓN DE LOGOUT ===== */
+.confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confirm-dialog {
+  background: var(--white);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-lg);
+  min-width: 300px;
+  max-width: 400px;
+}
+
+.confirm-content {
+  padding: 24px;
+}
+
+.confirm-content h3 {
+  margin: 0 0 12px 0;
+  color: var(--text);
+  font-size: 1.2rem;
+}
+
+.confirm-content p {
+  margin: 0 0 24px 0;
+  color: var(--text-light);
+}
+
+.confirm-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.btn-danger {
+  background: var(--error);
+  color: var(--white);
+  border: none;
+}
+
+.btn-danger:hover {
+  background: #C0392B;
 }

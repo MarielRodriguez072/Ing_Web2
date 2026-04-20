@@ -5,187 +5,75 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Dashboard de Mangómetro - Ve un resumen de tus finanzas personales en tiempo real.">
     <title>Dashboard - Mangómetro</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&amp;display=swap">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="components/dashboard-sidebar.css">
+    <link rel="stylesheet" href="fintech-analysis.css">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🥭</text></svg>">
-    <style>
-        .dashboard-layout {
-            display: flex;
-            min-height: 100vh;
-        }
-        .sidebar {
-            width: 250px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: var(--text);
-            padding: 20px;
-            box-shadow: var(--shadow);
-        }
-        .sidebar h2 {
-            margin-bottom: 30px;
-            font-size: 1.5rem;
-        }
-        .sidebar ul {
-            list-style: none;
-        }
-        .sidebar li {
-            margin-bottom: 15px;
-        }
-        .sidebar a {
-            color: var(--text);
-            text-decoration: none;
-            font-weight: 500;
-            display: block;
-            padding: 10px;
-            border-radius: var(--border-radius);
-            transition: var(--transition);
-        }
-        .sidebar a:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        .sidebar a.active,
-        .sidebar a[aria-current="page"] {
-            background: rgba(255, 255, 255, 0.25);
-        }
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        .header {
-            background: var(--white);
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .user-name {
-            font-size: 1.2rem;
-            font-weight: 500;
-        }
-        .main {
-            padding: 20px;
-            flex: 1;
-        }
-        .cards {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .card {
-            background: var(--white);
-            padding: 20px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            flex: 1;
-            text-align: center;
-        }
-        .card h3 {
-            margin-bottom: 10px;
-            color: var(--text-light);
-        }
-        .card .value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-        .table-container {
-            background: var(--white);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-        th {
-            background: var(--bg);
-            font-weight: 500;
-        }
-
-        @media (max-width: 900px) {
-            .dashboard-layout {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-                position: relative;
-                box-shadow: none;
-                border-bottom-left-radius: 0;
-                border-bottom-right-radius: 0;
-            }
-
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-
-            .cards {
-                flex-direction: column;
-            }
-
-            .main {
-                padding: 16px;
-            }
-
-            .sidebar ul {
-                padding: 0;
-            }
-
-            .sidebar li {
-                margin-bottom: 10px;
-            }
-
-            .table-container {
-                margin-bottom: 20px;
-            }
-        }
-    </style>
 </head>
 <body>
-    <div class="dashboard-layout">
+    <!-- Alert Container -->
+    <div id="alert-container" style="position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; max-width: 400px;"></div>
+
+    <div class="dashboard-wrapper">
         <!-- Sidebar -->
-        <aside class="sidebar">
-            <h2>🥭 Mangómetro</h2>
+        <aside class="sidebar" id="sidebar">
+          <div class="sidebar-header">
+            <h2 class="sidebar-logo">🥭 Mangómetro</h2>
+          </div>
+          <nav class="sidebar-nav">
             <ul>
-                <li><a href="dashboard.html">Dashboard</a></li>
-                <li><a href="tickets.html">Cargar tickets</a></li>
-                <li><a href="analysis.html">Análisis de gastos</a></li>
-                <li><a href="#" id="logout-btn">Logout</a></li>
+              <li><a href="dashboard.html" class="sidebar-link active" data-page="dashboard">📊 Dashboard</a></li>
+              <li><a href="tickets.html" class="sidebar-link" data-page="tickets">📱 Carga de tickets</a></li>
+              <li><a href="analysis.html" class="sidebar-link" data-page="analysis">📈 Análisis de gastos</a></li>
+              <li><hr class="sidebar-divider"></li>
+              <li><a href="#" id="sidebar-logout" class="sidebar-link logout-link">🚪 Cerrar Sesión</a></li>
             </ul>
+          </nav>
         </aside>
 
-        <!-- Main Content -->
-        <div class="main-content">
+        <div class="dashboard-main">
             <!-- Header -->
-            <header class="header">
-                <h1>Dashboard</h1>
-                <div class="user-name">Bienvenido, Usuario</div>
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <h1>Dashboard</h1>
+                    <p>Resumen de tus finanzas en tiempo real</p>
+                </div>
+                <div class="header-right">
+                    <button class="btn btn-secondary btn-sm" id="user-profile">
+                        👤 <span id="user-name">Usuario</span>
+                    </button>
+                </div>
             </header>
 
-            <!-- Main -->
-            <main class="main">
-                <!-- Cards -->
-                <div class="cards">
-                    <div class="card">
-                        <h3>Total gastado</h3>
-                        <div class="value">$0.00</div>
+            <!-- Page Content -->
+            <main class="dashboard-content">
+                <!-- KPI Cards -->
+                <div class="fintech-kpis">
+                    <div class="kpi-card total">
+                        <div class="kpi-icon">💰</div>
+                        <div class="kpi-content">
+                            <h3>Total Gastado</h3>
+                            <div class="kpi-metric" id="total-gastado">$0.00</div>
+                            <p class="kpi-label">Este mes</p>
+                        </div>
                     </div>
-                    <div class="card">
-                        <h3>Gasto mensual</h3>
-                        <div class="value">$0.00</div>
+                    <div class="kpi-card average">
+                        <div class="kpi-icon">📊</div>
+                        <div class="kpi-content">
+                            <h3>Promedio Diario</h3>
+                            <div class="kpi-metric" id="avg-diario">$0.00</div>
+                            <p class="kpi-label">Promedio</p>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Table -->
+                <!-- Quick Actions -->
+                <div style="margin-bottom: 2rem;">
+                    <button id="add-expense-btn" class="btn btn-primary" style="width: 100%; padding: 16px;">➕ Agregar Gasto</button>
+                </div>
+
+                <!-- Recent Expenses Table -->
                 <div class="table-container">
                     <table>
                         <thead>
@@ -198,7 +86,9 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td colspan="4" style="text-align: center; color: var(--text-light);">No hay gastos recientes</td>
+                                <td colspan="4" style="text-align: center; color: var(--text-light); padding: 2rem;">
+                                    No hay gastos recientes
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -207,7 +97,9 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+<script src="auth.js"></script>
+    <script src="expenses.js"></script>
     <script src="dashboard.js"></script>
+    <script src="auth-events.js"></script>
 </body>
 </html>

@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🥭</text></svg>">
-    <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
+    <!-- debug.js removed for production -->
 </head>
 <body>
     <!-- Navbar -->
@@ -54,12 +54,22 @@
                             type="email" 
                             id="email" 
                             name="email" 
-                            placeholder="tu@email.com" 
+                            placeholder="correo@ejemplo.com" 
                             required 
                             aria-label="Correo electrónico"
                             autocomplete="email"
                         >
-                        <small class="form-help">Usaremos esto para tu cuenta</small>
+                        <small class="form-help">Ingresa un email válido para iniciar sesión</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="role">Tipo de Cuenta</label>
+                        <select id="role" name="role" required aria-label="Tipo de cuenta">
+                            <option value="">Selecciona tu tipo de cuenta</option>
+                            <option value="cliente">Cliente</option>
+                            <option value="asesor">Asesor Financiero</option>
+                        </select>
+                        <small class="form-help">Elige el tipo de cuenta que deseas crear</small>
                     </div>
 
                     <div class="form-group">
@@ -264,7 +274,8 @@
             position: relative;
         }
 
-        .form-group input {
+        .form-group input,
+        .form-group select {
             width: 100%;
             padding: 12px 16px;
             border: 2px solid #e0e0e0;
@@ -273,6 +284,11 @@
             font-size: 1rem;
             transition: var(--transition);
             box-sizing: border-box;
+        }
+
+        .form-group select {
+            background: white;
+            cursor: pointer;
         }
 
         .password-container input {
@@ -296,6 +312,12 @@
         }
 
         .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(255, 199, 44, 0.15);
+        }
+
+        .form-group select:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 4px rgba(255, 199, 44, 0.15);
@@ -447,6 +469,7 @@
         const registerForm = document.getElementById('register-form');
         const usernameInput = document.getElementById('username');
         const emailInput = document.getElementById('email');
+        const roleSelect = document.getElementById('role');
         const passwordInput = document.getElementById('password');
         const confirmPasswordInput = document.getElementById('confirm-password');
         const termsCheckbox = document.getElementById('terms');
@@ -455,14 +478,19 @@
         const submitBtn = document.getElementById('submit-btn');
         const alertContainer = document.getElementById('alert-container');
 
+        // ========== VERIFICACIÓN DE DEPENDENCIAS REMOVIDA ==========
+        // Las contraseñas se guardan en texto plano sin encriptación
+
         // ========== SHOW/HIDE PASSWORD ==========
         togglePassword1.addEventListener('click', function() {
+            // Mostrar u ocultar contraseña principal
             const type = passwordInput.type === 'password' ? 'text' : 'password';
             passwordInput.type = type;
             this.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
         });
 
         togglePassword2.addEventListener('click', function() {
+            // Mostrar u ocultar contraseña de confirmación
             const type = confirmPasswordInput.type === 'password' ? 'text' : 'password';
             confirmPasswordInput.type = type;
             this.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
@@ -479,17 +507,19 @@
         }
 
         function isValidPassword(password) {
+            // Validar que la contraseña cumpla con longitud y caracteres básicos
             const errors = [];
-            if (password.length < 8) return false;
-            if (!/[A-Z]/.test(password)) return false;
+            if (password.length < 6) return false;
+            if (!/[a-zA-Z]/.test(password)) return false;
             if (!/[0-9]/.test(password)) return false;
             return true;
         }
 
         function getPasswordErrors(password) {
+            // Devuelve lista de errores cuando la contraseña no cumple requisitos
             const errors = [];
-            if (password.length < 8) errors.push('Mínimo 8 caracteres');
-            if (!/[A-Z]/.test(password)) errors.push('Mayúscula requerida');
+            if (password.length < 6) errors.push('Mínimo 6 caracteres');
+            if (!/[a-zA-Z]/.test(password)) errors.push('Letra requerida');
             if (!/[0-9]/.test(password)) errors.push('Número requerido');
             return errors;
         }
@@ -497,6 +527,7 @@
         function validateForm() {
             const username = usernameInput.value.trim();
             const email = emailInput.value.trim();
+            const role = roleSelect.value;
             const password = passwordInput.value;
             const confirmPassword = confirmPasswordInput.value;
             const termsAccepted = termsCheckbox.checked;
@@ -523,30 +554,19 @@
                 return false;
             }
 
-            // Validar contraseña
+            // Validar que se haya elegido el tipo de cuenta
+            if (!role) {
+                showAlert('Por favor selecciona un tipo de cuenta', 'error');
+                return false;
+            }
+
+            // Validar contraseña sin protección estricta
             if (!password) {
                 showAlert('Por favor ingresa una contraseña', 'error');
                 return false;
             }
 
-            if (!isValidPassword(password)) {
-                const errors = getPasswordErrors(password);
-                showAlert('Contraseña débil: ' + errors.join(', '), 'error');
-                return false;
-            }
-
-            // Validar confirmación de contraseña
-            if (!confirmPassword) {
-                showAlert('Por favor confirma tu contraseña', 'error');
-                return false;
-            }
-
-            if (password !== confirmPassword) {
-                showAlert('Las contraseñas no coinciden', 'error');
-                return false;
-            }
-
-            // Validar términos
+            // Validar aceptación de términos y condiciones
             if (!termsAccepted) {
                 showAlert('Debes aceptar los términos y condiciones', 'error');
                 return false;
@@ -583,25 +603,48 @@
         }
 
         // ========== GUARDAR USUARIO EN LOCALSTORAGE ==========
-        async function saveUser(username, email, password) {
-            const hashedPassword = await bcrypt.hash(password, 10);
+        function isOldHash(password) {
+            return typeof password === 'string' && /^\$2[aby]\$[0-9]{2}\$[./A-Za-z0-9]{53}$/.test(password);
+        }
+
+        function saveUser(username, email, role, password) {
+            // Guardar el usuario con la contraseña en texto plano (sin encriptación)
             const newUser = {
                 id: Math.random().toString(36).substr(2, 9),
                 username: username,
                 email: email,
-                password: hashedPassword,
+                role: role,
+                password: password,  // Contraseña en texto plano
                 createdAt: new Date().toISOString()
             };
 
-            // Obtener usuarios existentes
+            // Obtener usuarios existentes desde localStorage con validación
             let users = [];
             const existingUsersStr = localStorage.getItem('mangometro_users');
             if (existingUsersStr) {
-                users = JSON.parse(existingUsersStr);
+                try {
+                    users = JSON.parse(existingUsersStr);
+                    // Verificar que sea un arreglo
+                    if (!Array.isArray(users)) {
+                        users = [];
+                        localStorage.removeItem('mangometro_users');
+                    }
+                } catch (parseError) {
+                    console.error('Error parseando usuarios de localStorage:', parseError);
+                    users = [];
+                    localStorage.removeItem('mangometro_users');
+                }
             }
 
-            // Verificar si usuario o email ya existen
-            const userExists = users.some(u => u.username === username);
+            // Limpiar usuarios antiguos que guardaban bcrypt en el almacenamiento
+            const hasOldHashUsers = users.some(u => isOldHash(u.password));
+            if (hasOldHashUsers) {
+                console.warn('Eliminando usuarios antiguos con bcrypt guardado en localStorage.');
+                users = users.filter(u => !isOldHash(u.password));
+            }
+
+            // Verificar si el nombre de usuario o email ya existen
+            const userExists = users.some(u => u.username.toLowerCase() === username.toLowerCase());
             const emailExists = users.some(u => u.email === email);
 
             if (userExists) {
@@ -614,7 +657,7 @@
                 return false;
             }
 
-            // Agregar nuevo usuario
+            // Agregar nuevo usuario al arreglo y guardarlo
             users.push(newUser);
             localStorage.setItem('mangometro_users', JSON.stringify(users));
 
@@ -622,21 +665,23 @@
         }
 
         // ========== MANEJAR SUBMIT DEL FORMULARIO ==========
-        registerForm.addEventListener('submit', async function(e) {
+        registerForm.addEventListener('submit', function(e) {
             e.preventDefault();
 
+            // Validar datos antes de intentar registrar el usuario
             if (!validateForm()) return;
 
             submitBtn.disabled = true;
             submitBtn.textContent = '⏳ Creando cuenta...';
 
-            setTimeout(async () => {
+            setTimeout(() => {
                 try {
                     const username = usernameInput.value.trim();
-                    const email = emailInput.value.trim();
+                    const email = emailInput.value.trim().toLowerCase();
+                    const role = roleSelect.value;
                     const password = passwordInput.value;
 
-                    if (await saveUser(username, email, password)) {
+                    if (saveUser(username, email, role, password)) {
                         showAlert(`¡Bienvenido, ${username}! Redirigiendo a login...`, 'success');
                         setTimeout(() => {
                             window.location.href = 'login.html';
@@ -646,7 +691,8 @@
                         submitBtn.textContent = 'Crear Cuenta';
                     }
                 } catch (error) {
-                    showAlert('Error al crear la cuenta.', 'error');
+                    console.error('Error completo al crear cuenta:', error);
+                    showAlert('Error al crear la cuenta. Revisa la consola para más detalles.', 'error');
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'Crear Cuenta';
                 }

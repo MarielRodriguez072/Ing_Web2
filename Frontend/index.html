@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <!-- Metadatos de la página -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Mangómetro - Plataforma inteligente de gestión de gastos personales con carga automática de tickets y análisis avanzado.">
@@ -11,25 +12,29 @@
     <meta property="og:description" content="Gestiona tus gastos personales de forma inteligente con carga automática de tickets y análisis avanzados.">
     <meta property="og:type" content="website">
     <title>Mangómetro - Controla tus gastos de forma inteligente</title>
+    
+    <!-- Fuentes y estilos -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🥭</text></svg>">
 </head>
 <body>
-    <!-- Navbar -->
+    <!-- Barra de navegación principal -->
     <nav class="navbar" role="navigation" aria-label="Navegación principal">
         <div class="nav-container">
+            <!-- Logo y enlace a la página principal -->
             <a href="index.html" class="logo" title="Volver a Mangómetro">
                 <h2>🥭 Mangómetro</h2>
             </a>
             
-            <!-- Hamburger Menu para móvil -->
+            <!-- Botón hamburguesa para menú móvil -->
             <button class="hamburger" id="hamburger" aria-label="Menú de navegación" aria-expanded="false" aria-controls="nav-menu">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
             
+            <!-- Botones de navegación -->
             <div class="nav-buttons" id="nav-menu">
                 <button class="btn-secondary" id="login-btn" aria-label="Iniciar sesión">Iniciar Sesión</button>
                 <button class="btn-primary" id="register-btn" aria-label="Crear una nueva cuenta">Registrarse</button>
@@ -37,33 +42,36 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Sección principal de bienvenida -->
     <section class="hero" role="region" aria-label="Sección principal de bienvenida">
         <div class="hero-container">
             <h1>Controla tus gastos<br>de forma inteligente</h1>
             <p class="hero-subtitle">Descubre cómo Mangómetro transforma la manera en que gestionas tu dinero con análisis avanzados y carga fácil de tickets y facturas.</p>
             <div class="hero-buttons">
-                <a href="#cards" class="btn-primary btn-large" aria-label="Ir a accesos rápidos">Comenzar</a>
-                <button class="btn-secondary btn-large" id="demo-btn" aria-label="Ver demostración interactiva">Ver Demo</button>
+
+
             </div>
         </div>
     </section>
 
-    <!-- Cards Section -->
+    <!-- Sección de tarjetas de acceso rápido -->
     <section class="cards-section" id="cards" role="region" aria-label="Accesos rápidos a funcionalidades principales">
         <div class="container">
             <h2>Accesos Rápidos</h2>
             <div class="cards-grid">
-                <a href="#" class="card" data-page="dashboard" role="button" aria-label="Acceder al Dashboard para ver resumen de finanzas">
+                <!-- Tarjeta para acceder al Dashboard -->
+                <a href="dashboard.html" class="card" data-page="dashboard" role="button" aria-label="Acceder al Dashboard para ver resumen de finanzas">
                     <div class="card-icon" aria-hidden="true">📊</div>
                     <h3>Dashboard</h3>
                     <p>Visión general de tus finanzas en tiempo real.</p>
                 </a>
+                <!-- Tarjeta para acceder a la carga de tickets -->
                 <a href="#" class="card" data-page="tickets" role="button" aria-label="Acceder a carga de tickets para añadir gastos">
                     <div class="card-icon" aria-hidden="true">📱</div>
                     <h3>Carga de Tickets</h3>
                     <p>Sube tus recibos fácilmente y extrae datos automáticamente.</p>
                 </a>
+                <!-- Tarjeta para acceder al análisis de gastos -->
                 <a href="#" class="card" data-page="analisis" role="button" aria-label="Acceder a análisis de gastos para ver patrones de consumo">
                     <div class="card-icon" aria-hidden="true">📈</div>
                     <h3>Análisis de Gastos</h3>
@@ -73,7 +81,7 @@
         </div>
     </section>
 
-    <!-- Footer -->
+    <!-- Pie de página -->
     <footer class="footer" role="contentinfo">
         <div class="container">
             <p>&copy; 2026 Mangómetro. Todos los derechos reservados.</p>
@@ -81,6 +89,7 @@
         </div>
     </footer>
 
+    <!-- Script principal de la página -->
     <script src="script.js"></script>
 </body>
 </html>

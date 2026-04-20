@@ -6,640 +6,153 @@
     <meta name="description" content="Carga tus tickets y recibos en Mangómetro para registrar tus gastos automáticamente.">
     <title>Carga de Tickets - Mangómetro</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+
     <link rel="stylesheet" href="styles.css">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🥭</text></svg>">
+
+    <link rel="stylesheet" href="tickets.css">
+    <link rel="stylesheet" href="components/dashboard-sidebar.css">
+
+
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar" role="navigation" aria-label="Navegación principal">
-        <div class="nav-container">
-            <a href="index.html" class="logo" title="Volver a Mangómetro">
-                <h2>🥭 Mangómetro</h2>
-            </a>
-            <div class="nav-buttons">
-                <button class="btn-secondary" id="logout-btn">Cerrar Sesión</button>
-            </div>
+    <!-- Navbar removida - dashboard header la reemplaza -->
+
+    <div id="alert-container" style="position: fixed; top: 20px; right: 20px; z-index: 10000;"></div>
+
+
+<!-- Dashboard Layout -->
+  <div class="dashboard-wrapper">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h2 class="sidebar-logo">🥭 Mangómetro</h2>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li><a href="dashboard.html" class="sidebar-link" data-page="dashboard">📊 Dashboard</a></li>
+          <li><a href="tickets.html" class="sidebar-link active" data-page="tickets">📱 Carga de tickets</a></li>
+          <li><a href="analysis.html" class="sidebar-link" data-page="analysis">📈 Análisis de gastos</a></li>
+          <li><hr class="sidebar-divider"></li>
+          <li><a href="#" id="sidebar-logout" class="sidebar-link logout-link">🚪 Cerrar Sesión</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="dashboard-main">
+      <!-- Header -->
+      <header class="dashboard-header">
+        <div class="header-left">
+          <h1>Carga de Tickets</h1>
+          <p>Sube recibos para registrar gastos automáticamente</p>
         </div>
-    </nav>
-
-    <!-- Alert Container -->
-    <div id="alert-container" style="position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; max-width: 400px;"></div>
-
-    <!-- Tickets Content -->
-    <section class="tickets-section" role="main">
-        <div class="dashboard-layout">
-            <aside class="sidebar">
-                <h2>🥭 Mangómetro</h2>
-                <ul>
-                    <li><a href="dashboard.html">Dashboard</a></li>
-                    <li><a href="tickets.html">Cargar tickets</a></li>
-                    <li><a href="analysis.html">Análisis de gastos</a></li>
-                    <li><a href="#" class="logout-link">Logout</a></li>
-                </ul>
-            </aside>
-
-            <div class="main-content">
-                <div class="content-header">
-                    <h1>📱 Carga de Tickets</h1>
-                    <p class="page-subtitle">Sube una imagen de tu recibo para registrar gastos automáticamente</p>
-                </div>
-
-                <div class="container" style="max-width: 600px;">
-                    <div class="ticket-form-card">
-                <!-- File Upload -->
-                <div class="upload-zone" id="uploadZone">
-                    <div class="upload-content">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">📸</div>
-                        <h3>Arrastra tu ticket aquí</h3>
-                        <p>o haz clic para seleccionar una imagen</p>
-                        <input 
-                            type="file" 
-                            id="fileInput" 
-                            accept="image/*" 
-                            style="display: none;"
-                            aria-label="Seleccionar archivo de imagen"
-                        >
-                    </div>
-                </div>
-
-                <div id="preview" style="display: none; margin: 1.5rem 0;">
-                    <img id="previewImg" style="max-width: 100%; border-radius: 12px;">
-                </div>
-
-                <div class="preview-actions" style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; align-items: center;">
-                    <button type="button" class="btn-secondary" id="process-ticket-btn">🤖 Procesar ticket</button>
-                    <span id="process-status" style="color: var(--text-light); font-size: 0.95rem;">Sube o arrastra una imagen para simular la extracción de datos.</span>
-                </div>
-
-                <!-- Manual Form -->
-                <form id="ticket-form" class="ticket-form">
-                    <h3 style="margin-top: 2rem; color: var(--text);">O completa manualmente:</h3>
-
-                    <div class="form-group">
-                        <label for="commerce">Comercio / Tienda</label>
-                        <input 
-                            type="text" 
-                            id="commerce" 
-                            name="commerce" 
-                            placeholder="Ej: Supermercado Día" 
-                            aria-label="Nombre del comercio"
-                        >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="amount">Monto</label>
-                        <input 
-                            type="number" 
-                            id="amount" 
-                            name="amount" 
-                            placeholder="0.00" 
-                            step="0.01"
-                            min="0"
-                            aria-label="Monto del gasto"
-                        >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="date">Fecha</label>
-                        <input 
-                            type="date" 
-                            id="date" 
-                            name="date"
-                            aria-label="Fecha del gasto"
-                        >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="category">Categoría</label>
-                        <select id="category" name="category" aria-label="Categoría del gasto">
-                            <option value="">Selecciona una categoría</option>
-                            <option value="supermercado">Supermercado</option>
-                            <option value="transporte">Transporte</option>
-                            <option value="entretenimiento">Entretenimiento</option>
-                            <option value="comida">Comida y Restaurantes</option>
-                            <option value="servicios">Servicios</option>
-                            <option value="otro">Otro</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="description">Descripción (opcional)</label>
-                        <textarea 
-                            id="description" 
-                            name="description" 
-                            placeholder="Añade notas sobre este gasto"
-                            rows="3"
-                            aria-label="Descripción adicional"
-                        ></textarea>
-                    </div>
-
-                    <button type="submit" class="btn-primary btn-large" style="width: 100%;">
-                        💾 Guardar Gasto
-                    </button>
-                </form>
-            </div>
-
-            <!-- Navigation Links -->
-            <div style="margin-top: 2rem; text-align: center;">
-                <a href="dashboard.html" class="link">← Volver al Dashboard</a>
-                <span style="color: var(--text-light); margin: 0 1rem;">•</span>
-                <a href="analysis.html" class="link">Ver Análisis →</a>
-            </div>
-                </div>
-            </div>
+        <div class="header-right">
+          <button class="btn btn-secondary btn-sm" id="user-profile">
+            👤 <span id="user-name">Usuario</span>
+          </button>
         </div>
-    </section>
+      </header>
 
-    <!-- Footer -->
-    <footer class="footer" role="contentinfo">
-        <div class="container">
-            <p>&copy; 2026 Mangómetro. Todos los derechos reservados.</p>
+      <!-- Page Content -->
+      <main class="dashboard-content">
+        
+        <!-- Upload Area -->
+        <div class="upload-zone" id="uploadZone">
+          <input type="file" id="fileInput" accept="image/*" hidden>
+          <div class="upload-content">
+            <div class="upload-icon">📸</div>
+            <h3>Arrastra tu ticket o haz clic</h3>
+            <p>Sube tu recibo y procesa con IA OCR</p>
+          </div>
         </div>
-    </footer>
 
-    <style>
-        .tickets-section {
-            min-height: 100vh;
-            padding: 100px 20px 40px;
-            background: var(--bg);
+        <!-- Preview -->
+        <div id="preview" class="preview-container" style="display: none;">
+          <img id="previewImg" class="preview-img" alt="Preview">
+          <button id="process-ticket-btn" class="btn btn-primary btn-large">🤖 Procesar con IA OCR</button>
+        </div>
+
+        <!-- Manual Form -->
+        <form id="manual-expense-form" class="form-card">
+          <div class="card-header">
+            <div class="card-icon">📝</div>
+            <h3 class="card-title">O ingresa manualmente</h3>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="commerce">Comercio</label>
+              <input type="text" id="commerce" class="form-input" placeholder="Ej: Coto" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="amount">Monto</label>
+              <input type="number" id="amount" class="form-input" placeholder="$ 0.00" step="0.01" min="0" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="date">Fecha</label>
+              <input type="date" id="date" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="category">Categoría</label>
+              <select id="category" class="form-select" required>
+                <option value="">Seleccionar categoría</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="description">Notas (opcional)</label>
+            <textarea id="description" class="form-textarea" placeholder="Comentarios adicionales..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary form-submit">
+            💾 Guardar Gasto
+          </button>
+        </form>
+
+        <!-- Recent Expenses -->
+        <div id="recent-expenses" class="recent-list">
+          <div class="recent-list-header">
+            <h3>Gastos Recientes</h3>
+            <span class="badge" id="recent-count">0</span>
+          </div>
+          <div class="recent-expenses-list">
+            <div class="empty-state">
+              <div class="empty-icon">📭</div>
+              <p>No hay gastos recientes</p>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Inline script para categories -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      function populateCategories() {
+        const select = document.getElementById('category');
+        if (select && typeof CATEGORIES !== 'undefined' && CATEGORIES.length > 0) {
+          select.innerHTML = '<option value="">Seleccionar categoría</option>';
+          CATEGORIES.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat.value;
+            option.textContent = cat.label;
+            select.appendChild(option);
+          });
         }
-
-        .dashboard-layout {
-            display: flex;
-            gap: 1.5rem;
-            align-items: flex-start;
-            flex-wrap: wrap;
-        }
-
-        .sidebar {
-            width: 240px;
-            min-width: 220px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: var(--text);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 100px;
-            align-self: flex-start;
-        }
-
-        .sidebar h2 {
-            margin-bottom: 1.5rem;
-            font-size: 1.4rem;
-        }
-
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .sidebar li {
-            margin-bottom: 14px;
-        }
-
-        .sidebar a {
-            color: var(--text);
-            text-decoration: none;
-            display: block;
-            padding: 10px 12px;
-            border-radius: 12px;
-            transition: var(--transition);
-        }
-
-        .sidebar a:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        .sidebar a.active,
-        .sidebar a[aria-current="page"] {
-            background: rgba(255, 255, 255, 0.25);
-        }
-
-        .main-content {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .content-header {
-            margin-bottom: 2rem;
-        }
-
-        .tickets-section h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .page-subtitle {
-            color: var(--text-light);
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-        }
-
-        .ticket-form-card {
-            background: var(--white);
-            padding: 2.5rem;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-        }
-
-        .upload-zone {
-            border: 2px dashed var(--primary);
-            border-radius: 12px;
-            padding: 2rem;
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-            background: rgba(255, 199, 44, 0.05);
-        }
-
-        .upload-zone:hover {
-            background: rgba(255, 199, 44, 0.1);
-            border-color: var(--secondary);
-        }
-
-        .upload-zone.active {
-            background: rgba(255, 199, 44, 0.15);
-            border-color: var(--secondary);
-        }
-
-        .upload-content h3 {
-            color: var(--text);
-            margin: 1rem 0 0.5rem;
-        }
-
-        .upload-content p {
-            color: var(--text-light);
-            font-size: 0.95rem;
-        }
-
-        .ticket-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .form-group label {
-            font-weight: 500;
-            color: var(--text);
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            padding: 12px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-family: inherit;
-            font-size: 1rem;
-            transition: var(--transition);
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(255, 199, 44, 0.1);
-        }
-
-        .link {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-
-        .link:hover {
-            color: var(--secondary);
-        }
-
-        @media (max-width: 768px) {
-            .tickets-section {
-                padding: 100px 20px 40px;
-            }
-
-            .tickets-section h1 {
-                font-size: 1.8rem;
-            }
-
-            .ticket-form-card {
-                padding: 1.5rem;
-            }
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideOut {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-        }
-    </style>
-
-    <script>
-        const SESSION_TIMEOUT = 30 * 60 * 1000;
-        let sessionTimer = null;
-
-        function resetSessionTimer() {
-            clearTimeout(sessionTimer);
-            sessionTimer = setTimeout(() => {
-                localStorage.removeItem('mangometro_user');
-                localStorage.removeItem('mangometro_token');
-                showAlert('Tu sesión ha expirado por inactividad', 'error');
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 2000);
-            }, SESSION_TIMEOUT);
-        }
-
-        function showAlert(message, type = 'info') {
-            const container = document.getElementById('alert-container');
-            const alert = document.createElement('div');
-            alert.className = `alert alert-${type}`;
-            
-            const icons = {
-                error: '❌',
-                success: '✅',
-                warning: '⚠️',
-                info: 'ℹ️'
-            };
-            
-            alert.innerHTML = `
-                <span>${icons[type]}</span>
-                <span>${message}</span>
-            `;
-            alert.style.cssText = `
-                padding: 12px 16px;
-                border-radius: 8px;
-                display: flex;
-                gap: 12px;
-                align-items: center;
-                animation: slideIn 0.3s ease;
-                cursor: pointer;
-            `;
-
-            const bgColors = {
-                error: '#f8d7da',
-                success: '#d4edda',
-                warning: '#fff3cd',
-                info: '#d1ecf1'
-            };
-
-            const textColors = {
-                error: '#721c24',
-                success: '#155724',
-                warning: '#856404',
-                info: '#0c5460'
-            };
-
-            alert.style.background = bgColors[type];
-            alert.style.color = textColors[type];
-            alert.style.border = `1px solid ${textColors[type]}33`;
-            alert.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
-
-            container.appendChild(alert);
-
-            alert.addEventListener('click', () => alert.remove());
-
-            setTimeout(() => {
-                alert.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => alert.remove(), 300);
-            }, 5000);
-        }
-
-        const uploadZone = document.getElementById('uploadZone');
-        const fileInput = document.getElementById('fileInput');
-        const preview = document.getElementById('preview');
-        const previewImg = document.getElementById('previewImg');
-
-        const currentUser = localStorage.getItem('mangometro_user');
-        if (!currentUser) {
-            window.location.href = 'login.html';
-        }
-
-        resetSessionTimer();
-        document.addEventListener('click', resetSessionTimer);
-        document.addEventListener('keypress', resetSessionTimer);
-
-        const sidebarLinks = document.querySelectorAll('.sidebar a:not(.logout-link)');
-        sidebarLinks.forEach(link => {
-            link.addEventListener('click', function(event) {
-                event.preventDefault();
-                window.location.href = this.href;
-            });
-        });
-
-        setActiveSidebarLink();
-
-        // Click to upload
-        uploadZone.addEventListener('click', () => fileInput.click());
-
-        // Drag and drop
-        uploadZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadZone.classList.add('active');
-        });
-
-        uploadZone.addEventListener('dragleave', () => {
-            uploadZone.classList.remove('active');
-        });
-
-        uploadZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadZone.classList.remove('active');
-            handleFile(e.dataTransfer.files[0]);
-        });
-
-        // File input change
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files[0]) {
-                handleFile(e.target.files[0]);
-            }
-        });
-
-        function handleFile(file) {
-            if (file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    previewImg.src = e.target.result;
-                    preview.style.display = 'block';
-                    showAlert('📸 Imagen cargada. La extracción con IA está en desarrollo.', 'info');
-                };
-                reader.readAsDataURL(file);
-            } else {
-                showAlert('Por favor, selecciona una imagen válida', 'error');
-            }
-        }
-
-        const processButton = document.getElementById('process-ticket-btn');
-        const commerceInput = document.getElementById('commerce');
-        const amountInput = document.getElementById('amount');
-        const dateInput = document.getElementById('date');
-        const categoryInput = document.getElementById('category');
-        const descriptionInput = document.getElementById('description');
-        const previewContainer = document.getElementById('preview');
-
-        document.getElementById('ticket-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const commerce = commerceInput.value.trim();
-            const amount = parseFloat(amountInput.value);
-            const date = dateInput.value;
-            const category = categoryInput.value;
-            const description = descriptionInput.value.trim();
-
-            if (!commerce || !amount || !date || !category) {
-                showAlert('Por favor, completa todos los campos obligatorios', 'error');
-                return;
-            }
-
-            if (amount <= 0) {
-                showAlert('El monto debe ser mayor a 0', 'error');
-                return;
-            }
-
-            const userStr = localStorage.getItem('mangometro_user');
-            if (!userStr) {
-                showAlert('No hay sesión activa. Por favor, inicia sesión.', 'error');
-                window.location.href = 'login.html';
-                return;
-            }
-
-            const user = JSON.parse(userStr);
-            const expense = {
-                id: Date.now().toString(),
-                commerce,
-                amount: amount.toFixed(2),
-                date,
-                category,
-                description: description || '',
-                userId: user.id,
-                createdAt: new Date().toISOString()
-            };
-
-            saveExpense(expense);
-            showAlert('✅ Gasto guardado correctamente', 'success');
-            this.reset();
-            preview.style.display = 'none';
-            dateInput.valueAsDate = new Date();
-        });
-
-        processButton.addEventListener('click', () => {
-            const file = fileInput.files[0];
-            if (!file) {
-                showAlert('Selecciona una imagen antes de procesar el ticket.', 'error');
-                return;
-            }
-
-            processButton.disabled = true;
-            const statusText = document.getElementById('process-status');
-            statusText.textContent = 'Procesando ticket...';
-            processButton.textContent = '⏳ Procesando';
-
-            setTimeout(() => {
-                simulateAiExtraction(file);
-                processButton.disabled = false;
-                processButton.textContent = '🤖 Procesar ticket';
-                statusText.textContent = 'Campos completados automáticamente por IA. Revisa y guarda el gasto.';
-            }, 1400);
-        });
-
-        function simulateAiExtraction(file) {
-            const examples = [
-                {
-                    commerce: 'Supermercado Día',
-                    amount: '246.70',
-                    category: 'supermercado',
-                    description: 'Compra semanal'
-                },
-                {
-                    commerce: 'Café Express',
-                    amount: '12.50',
-                    category: 'comida',
-                    description: 'Café y snack'
-                },
-                {
-                    commerce: 'MetroBus',
-                    amount: '35.00',
-                    category: 'transporte',
-                    description: 'Recarga transporte'
-                },
-                {
-                    commerce: 'Cine Galaxy',
-                    amount: '45.90',
-                    category: 'entretenimiento',
-                    description: 'Entrada de cine'
-                }
-            ];
-
-            const selected = examples[Math.floor(Math.random() * examples.length)];
-            commerceInput.value = selected.commerce;
-            amountInput.value = selected.amount;
-            categoryInput.value = selected.category;
-            descriptionInput.value = selected.description;
-            dateInput.valueAsDate = new Date();
-        }
-
-        function saveExpense(expense) {
-            const expensesKey = `mangometro_expenses_${expense.userId}`;
-            const existingExpensesStr = localStorage.getItem(expensesKey);
-            const existingExpenses = existingExpensesStr ? JSON.parse(existingExpensesStr) : [];
-            existingExpenses.push(expense);
-            localStorage.setItem(expensesKey, JSON.stringify(existingExpenses));
-        }
-
-        const logoutButtons = document.querySelectorAll('#logout-btn, .logout-link');
-        logoutButtons.forEach(btn => {
-            btn.addEventListener('click', function(event) {
-                event.preventDefault();
-                localStorage.removeItem('mangometro_user');
-                localStorage.removeItem('mangometro_token');
-                alert('Sesión cerrada correctamente');
-                window.location.href = 'login.html';
-            });
-        });
-
-        function setActiveSidebarLink() {
-            const currentPath = window.location.pathname.split('/').pop();
-            const links = document.querySelectorAll('.sidebar a');
-            links.forEach(link => {
-                if (link.getAttribute('href') === currentPath) {
-                    link.classList.add('active');
-                    link.setAttribute('aria-current', 'page');
-                } else {
-                    link.classList.remove('active');
-                    link.removeAttribute('aria-current');
-                }
-            });
-        }
-
-        // Set today's date as default
-        document.getElementById('date').valueAsDate = new Date();
-    </script>
+      }
+      populateCategories();
+      setTimeout(populateCategories, 200);
+    });
+  </script>
+
+    <!-- Scripts -->
+
+<script src="auth.js"></script>
+    <script src="expenses.js"></script>
+    <script src="auth-events.js"></script>
+    <script src="tickets.js"></script>
 </body>
 </html>
+

@@ -1,0 +1,63 @@
+
+<!-- Dashboard Layout Template -->
+<div class="dashboard-wrapper">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2 class="sidebar-logo">🥭 Mangómetro</h2>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a href="dashboard.html" class="sidebar-link" data-page="dashboard">📊 Dashboard</a></li>
+        <li><a href="tickets.html" class="sidebar-link active" data-page="tickets">📱 Carga de tickets</a></li>
+        <li><a href="analysis.html" class="sidebar-link" data-page="analysis">📈 Análisis de gastos</a></li>
+        <li><hr class="sidebar-divider"></li>
+        <li><a href="#" id="sidebar-logout" class="sidebar-link logout-link">🚪 Cerrar Sesión</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="dashboard-main">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-left">
+        <h1 id="page-title">Carga de Tickets</h1>
+        <p id="page-subtitle">Gestiona tus gastos de forma inteligente</p>
+      </div>
+      <div class="header-right">
+        <button class="btn btn-secondary btn-sm" id="user-profile">
+          👤 <span id="user-name">Usuario</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="dashboard-content">
+      <slot></slot>
+    </main>
+  </div>
+</div>
+
+<script>
+  // Auto-activate sidebar link
+  document.addEventListener('DOMContentLoaded', function() {
+    const currentPath = window.location.pathname.split('/').pop() || 'dashboard.html';
+    document.querySelectorAll('.sidebar-link').forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === currentPath || link.dataset.page === currentPath.replace('.html', '')) {
+        link.classList.add('active');
+      }
+    });
+    
+    // Update title
+    const titleMap = {
+      'tickets.html': 'Carga de Tickets',
+      'analysis.html': 'Análisis de Gastos',
+      'dashboard.html': 'Dashboard'
+    };
+    const title = titleMap[currentPath] || 'Dashboard';
+    document.getElementById('page-title').textContent = title;
+  });
+</script>
+

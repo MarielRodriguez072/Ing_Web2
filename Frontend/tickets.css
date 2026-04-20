@@ -1,0 +1,406 @@
+/* ========== TICKETS PAGE - ESTILOS FINTECH MODERNOS ========== */
+
+.tickets-page {
+  min-height: 100vh;
+  padding-top: 100px;
+  padding-bottom: var(--spacing-xl);
+  background: linear-gradient(135deg, var(--bg) 0%, var(--bg-secondary) 100%);
+}
+
+/* Header */
+.tickets-header {
+  text-align: center;
+  margin-bottom: var(--spacing-2xl);
+}
+
+.tickets-header h1 {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: var(--spacing-md);
+}
+
+.tickets-header p {
+  font-size: 1.2rem;
+  color: var(--text-light);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Dropzone Upload */
+.upload-zone {
+  background: var(--white);
+  border: 3px dashed rgba(255, 199, 44, 0.4);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xl);
+  text-align: center;
+  transition: var(--transition);
+  cursor: pointer;
+  position: relative;
+  margin-bottom: var(--spacing-xl);
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-lg);
+}
+
+.upload-zone:hover {
+  border-color: var(--primary);
+  background: linear-gradient(135deg, var(--bg-secondary), var(--white));
+  box-shadow: var(--shadow);
+  transform: translateY(-4px);
+}
+
+.upload-zone.dragover {
+  border-color: var(--accent);
+  background: linear-gradient(135deg, rgba(46, 204, 113, 0.05), rgba(255, 199, 44, 0.05));
+  box-shadow: var(--shadow-hover);
+}
+
+.upload-icon {
+  font-size: 4rem;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.upload-zone h3 {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: var(--spacing-sm);
+}
+
+.upload-zone p {
+  color: var(--text-light);
+  font-size: 1rem;
+}
+
+/* Preview */
+.preview-container {
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  text-align: center;
+  box-shadow: var(--shadow);
+  margin-bottom: var(--spacing-2xl);
+  display: none;
+}
+
+.preview-img {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Form Card */
+.form-card {
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow);
+  padding: var(--spacing-2xl);
+  margin-bottom: var(--spacing-2xl);
+  border: 1px solid rgba(255, 199, 44, 0.1);
+}
+
+.form-card h3 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: var(--spacing-xl);
+  text-align: center;
+}
+
+/* Form Grid */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: var(--spacing-sm);
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: 2px solid var(--border);
+  border-radius: var(--border-radius-md);
+  font-size: 1rem;
+  font-family: inherit;
+  background: var(--white);
+  transition: var(--transition-fast);
+  min-height: 56px;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(255, 199, 44, 0.1);
+  transform: translateY(-1px);
+}
+
+.form-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Form row especial */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: var(--spacing-lg);
+}
+
+/* Submit Button */
+.form-submit {
+  grid-column: 1 / -1;
+  padding: 20px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  height: 64px;
+}
+
+/* Recent Expenses */
+.recent-list {
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow);
+  padding: 0;
+  overflow: hidden;
+}
+
+.recent-list h3 {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: var(--white);
+  margin: 0;
+  padding: var(--spacing-lg) var(--spacing-2xl);
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.recent-list .empty-state {
+  text-align: center;
+  padding: var(--spacing-2xl);
+  color: var(--text-light);
+  font-style: italic;
+}
+
+.recent-list .empty-state::before {
+  content: "📭";
+  font-size: 3rem;
+  display: block;
+  margin-bottom: var(--spacing-lg);
+  opacity: 0.5;
+}
+
+.expense-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg) var(--spacing-2xl);
+  border-bottom: 1px solid var(--border);
+  transition: var(--transition-fast);
+}
+
+.expense-item:hover {
+  background: var(--bg-secondary);
+}
+
+.expense-item:last-child {
+  border-bottom: none;
+}
+
+.expense-date {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  min-width: 80px;
+}
+
+.expense-amount {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--secondary);
+  min-width: 100px;
+  text-align: right;
+}
+
+.expense-commerce {
+  font-weight: 500;
+  flex: 1;
+}
+
+.expense-category {
+  font-size: 0.85rem;
+  background: var(--bg-secondary);
+  padding: 4px 12px;
+  border-radius: 20px;
+  color: var(--text-light);
+}
+
+.expense-delete {
+  background: var(--error);
+  color: var(--white);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  opacity: 0;
+  transition: var(--transition-fast);
+}
+
+.expense-item:hover .expense-delete {
+  opacity: 1;
+}
+
+.expense-delete:hover {
+  background: #C0392B;
+  transform: scale(1.1);
+}
+
+/* Alert System */
+.alert {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  padding: var(--spacing-lg) var(--spacing-xl);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  color: var(--white);
+  font-weight: 500;
+  z-index: 10001;
+  transform: translateX(400px);
+  animation: slideIn 0.3s ease forwards;
+}
+
+.alert-success {
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+}
+
+.alert-error {
+  background: linear-gradient(135deg, var(--error), #E74C3C);
+}
+
+.alert-info {
+  background: linear-gradient(135deg, var(--info), #5DADE2);
+}
+
+.alert.warning {
+  background: linear-gradient(135deg, var(--warning), #F4B350);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .form-grid,
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .upload-zone {
+    min-height: 160px;
+    padding: var(--spacing-lg);
+  }
+
+  .upload-icon {
+    font-size: 3rem;
+  }
+
+  .form-card {
+    padding: var(--spacing-xl);
+  }
+
+  .expense-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+
+  .expense-amount {
+    align-self: flex-end;
+  }
+
+  .tickets-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .recent-list h3 {
+    padding: var(--spacing-lg);
+  }
+}
+
+@media (max-width: 480px) {
+  .tickets-page {
+    padding: var(--spacing-lg) var(--spacing-md);
+  }
+
+  .container {
+    padding: 0 var(--spacing-sm);
+  }
+
+  .form-input,
+  .form-select,
+  .form-textarea {
+    padding: var(--spacing-md);
+    font-size: 16px; /* Prevent zoom */
+  }
+
+  .form-submit {
+    padding: 18px;
+    font-size: 1.1rem;
+  }
+}
+
+/* Loading state */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  margin: -12px 0 0 -12px;
+  border: 2px solid transparent;
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+

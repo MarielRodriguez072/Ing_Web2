@@ -9,7 +9,7 @@ function resetSessionTimer() {
     sessionTimer = setTimeout(() => {
         localStorage.removeItem('mangometro_user');
         localStorage.removeItem('mangometro_token');
-        alert('Tu sesión ha expirado por inactividad');
+        alert('Tu sesión ha expirido por inactividad');
         window.location.href = 'login.html';
     }, SESSION_TIMEOUT);
 }
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const expenses = getUserExpenses(user.id);
 
     // ========== CALCULAR ESTADÍSTICAS ==========
-    const stats = calculateStats(expenses);
+    const stats = getStats(expenses);
 
     // ========== MOSTRAR EN PANTALLA ==========
     displayStats(stats);
@@ -62,31 +62,6 @@ function getUserExpenses(userId) {
     const expensesKey = `mangometro_expenses_${userId}`;
     const expensesStr = localStorage.getItem(expensesKey);
     return expensesStr ? JSON.parse(expensesStr) : [];
-}
-
-function calculateStats(expenses) {
-    const now = new Date();
-    const currentMonth = now.getMonth();
-    const currentYear = now.getFullYear();
-
-    let total = 0;
-    let monthly = 0;
-
-    expenses.forEach(expense => {
-        const amount = parseFloat(expense.amount) || 0;
-        total += amount;
-
-        // Calcular gasto mensual (mes actual)
-        const expenseDate = new Date(expense.date);
-        if (expenseDate.getMonth() === currentMonth && expenseDate.getFullYear() === currentYear) {
-            monthly += amount;
-        }
-    });
-
-    return {
-        total: total.toFixed(2),
-        monthly: monthly.toFixed(2)
-    };
 }
 
 function displayStats(stats) {
@@ -150,16 +125,24 @@ function formatCategory(category) {
 }
 
 function setupEventListeners() {
-    // Logout
-    const logoutBtn = document.getElementById('logout-btn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', function() {
-            localStorage.removeItem('mangometro_user');
-            localStorage.removeItem('mangometro_token');
-            alert('Sesión cerrada correctamente');
-            window.location.href = 'login.html';
-        });
+    const addBtn = document.getElementById('add-expense-btn');
+    if (addBtn) {
+        addBtn.addEventListener('click', () => window.location.href = 'tickets.html');
     }
+
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) logoutBtn.addEventListener('click', logout);
+
+    document.querySelectorAll('.delete-expense').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const expenseId = this.dataset.id;
+            const userId = getCurrentUser().id;
+            if (confirm('¿Eliminar gasto?')) {
+                deleteExpense(userId, expenseId);
+                displayRecentExpenses(getUserExpenses(userId));
+            }
+        });
+    });
 }
 
 function setActiveSidebarLink() {
@@ -176,5 +159,9 @@ function setActiveSidebarLink() {
     });
 }
 
-// ========== LOGGING ==========
-console.log('🥭 Dashboard - Lógica cargada correctamente');
+function logout() {
+    localStorage.removeItem('mangometro_user');
+    localStorage.removeItem('mangometro_token');
+    window.location.href = 'index.html';
+}
+
