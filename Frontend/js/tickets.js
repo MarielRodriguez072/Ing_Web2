@@ -30,7 +30,7 @@ function initTicketsPage() {
     if (uploadZone) uploadZone.style.display = 'none';
     if (manualForm) manualForm.style.display = 'none';
     if (recentExpenses) {
-      recentExpenses.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--text-light);"><h3>Vista de Asesor</h3><p>No tienes acceso a carga de tickets.<br><a href="analysis.html">→ Ir a Análisis</a></p></div>';
+      recentExpenses.innerHTML = '<div class="empty-state"><h3>Vista de Asesor</h3><p>No tienes acceso a carga de tickets.<br><a href="analysis.html">→ Ir a Análisis</a></p></div>';
     }
     return;
   }

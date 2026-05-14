@@ -211,7 +211,7 @@ function renderUltimosGastos(ultimos) {
   if (!tbody) return;
   
   if (ultimos.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-light)">No hay gastos</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" class="centered empty-row">No hay gastos</td></tr>';
     return;
   }
   

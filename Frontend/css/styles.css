@@ -418,6 +418,53 @@ body {
   z-index: 2;
 }
 
+.full-width {
+  width: 100%;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.centered {
+  text-align: center;
+}
+
+.empty-row {
+  color: var(--text-light);
+  padding: 2rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-light);
+}
+
+.empty-state h3 {
+  margin-bottom: 1rem;
+}
+
+.alert,
+.alert-stack {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 420px;
+}
+
+.alert > * {
+  margin: 0;
+}
+
+.alert-success { background: #e9f7ef; color: #1f6d3f; border: 1px solid #bde3c8; }
+.alert-error { background: #fdecea; color: #c0392b; border: 1px solid #f5c6cb; }
+.alert-info { background: #eaf4ff; color: #1a5c8f; border: 1px solid #b9d7f2; }
+
 .hero h1 {
   font-size: clamp(2.5rem, 5vw, 4.5rem);
   font-weight: 700;

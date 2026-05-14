@@ -64,9 +64,12 @@ function requireAuth() {
 
 // ================= RATE LIMITING =================
 // Limitar los intentos de login en caso de múltiples accesos fallidos.
-const LOGIN_ATTEMPTS = {};
-const MAX_ATTEMPTS = 5;
-const LOCKOUT_TIME = 15 * 60 * 1000; // 15 minutos
+var LOGIN_ATTEMPTS = window.LOGIN_ATTEMPTS || {};
+var MAX_ATTEMPTS = window.MAX_ATTEMPTS || 5;
+var LOCKOUT_TIME = window.LOCKOUT_TIME || 15 * 60 * 1000; // 15 minutos
+window.LOGIN_ATTEMPTS = LOGIN_ATTEMPTS;
+window.MAX_ATTEMPTS = MAX_ATTEMPTS;
+window.LOCKOUT_TIME = LOCKOUT_TIME;
 
 function checkLoginAttempts() {
     const key = 'localhost';

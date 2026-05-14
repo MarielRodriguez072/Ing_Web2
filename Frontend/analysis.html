@@ -6,9 +6,10 @@
     <meta name="description" content="Análisis detallado de tus patrones de consumo en Mangómetro.">
     <title>Análisis de Gastos - Mangómetro</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="components/dashboard-sidebar.css">
-    <link rel="stylesheet" href="analysis.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard-sidebar.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/analysis.css">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🥭</text></svg>">
 </head>
 <body>
@@ -16,7 +17,7 @@
     <!-- Navbar removida - dashboard header la reemplaza -->
 
     <!-- Alert Container -->
-    <div id="alert-container" style="position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; max-width: 400px;"></div>
+    <div id="alert-container" class="alert-stack"></div>
 
     <!-- Analysis Content -->
     <section class="analysis-section" role="main">
@@ -48,39 +49,11 @@
 <div class="header-right">
               <button class="btn btn-secondary btn-sm user-profile-btn" id="user-profile">
                 👤 <span id="user-name">Usuario</span>
-                <span id="role-indicator" class="role-badge cliente" style="margin-left: 0.5rem; font-size: 0.75rem; padding: 0.2rem 0.4rem; border-radius: 10px; background: rgba(46,204,113,0.2); color: #2ECC71;"></span>
+                <span id="role-indicator" class="role-badge cliente"></span>
               </button>
             </div>
 
-            <style>
-                .user-profile-btn {
-                    display: flex !important;
-                    align-items: center !important;
-                    gap: 0.5rem !important;
-                    padding: 8px 16px !important;
-                    border-radius: 20px !important;
-                    font-weight: 500 !important;
-                    transition: all 0.3s !important;
-                    white-space: nowrap !important;
-                }
-                .user-profile-btn:hover {
-                    background: rgba(255,199,44,0.2) !important;
-                    transform: translateY(-1px) !important;
-                    box-shadow: 0 4px 12px rgba(255,199,44,0.3) !important;
-                }
-                .role-badge {
-                    font-size: 0.75rem !important;
-                    padding: 0.25rem 0.5rem !important;
-                    border-radius: 12px !important;
-                    font-weight: 600 !important;
-                }
-                .role-badge.cliente { background: rgba(46,204,113,0.2) !important; color: #2ECC71 !important; }
-                .role-badge.asesor { background: rgba(52,152,219,0.2) !important; color: #3498DB !important; }
-            </style>
-
-
-
-          </header>
+            </header>
 
           <!-- Page Content -->
           <main class="dashboard-content">
@@ -117,15 +90,15 @@
                     <!-- Fintech KPI Cards -->
 <div class="fintech-kpis">
   <!-- Card especial asesor - INLINE -->
-  <div id="asesor-card" class="kpi-card asesor-global" style="display:none; background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%); color: white; border: none; margin-bottom: 1rem;">
-    <div class="kpi-icon" style="background: rgba(255,255,255,0.2); border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem;">🌍</div>
-    <div class="kpi-content">
-      <h3 style="margin: 0 0 0.5rem 0; color: white;">Análisis Global</h3>
-      <div class="kpi-metric" id="global-top-cat" style="font-size: 2rem;">--</div>
-      <div class="kpi-submetric" id="global-avg" style="font-size: 1.2rem; opacity: 0.9;">$0.00</div>
-      <p class="kpi-label" style="color: rgba(255,255,255,0.9); font-size: 0.85rem;">Top categoría | Promedio gasto</p>
-      <div id="asesor-recomendacion" style="margin-top: 1rem; font-size: 0.9rem; padding: 0.75rem 1rem; background: rgba(255,255,255,0.15); border-radius: 8px; font-style: italic; border-left: 4px solid rgba(255,255,255,0.4);">
-        💡 Enfócate en reducir <strong id="asesor-cat-sugerida" style="color: #FFF9F1;">supermercado</strong>
+<div id="asesor-card" class="kpi-card asesor-global hidden">
+    <div class="kpi-icon">🌍</div>
+      <div class="kpi-content">
+      <h3>Análisis Global</h3>
+      <div class="kpi-metric global-top-cat" id="global-top-cat">--</div>
+      <div class="kpi-submetric global-avg" id="global-avg">$0.00</div>
+      <p class="kpi-label">Top categoría | Promedio gasto</p>
+      <div id="asesor-recomendacion" class="kpi-recommendation">
+        💡 Enfócate en reducir <strong id="asesor-cat-sugerida">supermercado</strong>
       </div>
     </div>
   </div>
@@ -155,7 +128,7 @@
             <div class="kpi-icon">🎯</div>
             <div class="kpi-content">
                 <h3>Top Categoría</h3>
-<div class="kpi-metric-category" id="top-categoria" style="color: var(--text) !important; font-weight: 800; font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1; text-shadow: 0 2px 8px rgba(0,0,0,0.1), 0 0 0 0.5px rgba(255,255,255,0.8); letter-spacing: -0.02em;">--</div>
+<div class="kpi-metric-category" id="top-categoria">--</div>
                 <div class="kpi-submetric" id="top-monto">$0.00</div>
                 <p class="kpi-label">Categoría principal</p>
             </div>
@@ -180,7 +153,7 @@
                                 <div class="icon">📊</div>
                                 <h3>Gastos por categoría</h3>
                             </div>
-                            <canvas id="pie-chart" width="300" height="300" style="max-width: 100%; height: auto;"></canvas>
+                            <canvas id="pie-chart" width="300" height="300" class="responsive-chart"></canvas>
                         </div>
 
                         <div class="chart-card">
@@ -188,7 +161,7 @@
                                 <div class="icon">📉</div>
                                 <h3>Gastos por mes</h3>
                             </div>
-                            <canvas id="trends-chart" width="600" height="300" style="max-width: 100%; height: auto;"></canvas>
+                            <canvas id="trends-chart" width="600" height="300" class="responsive-chart"></canvas>
                         </div>
 
 <div class="chart-card">
@@ -196,15 +169,15 @@
                                 <div class="icon">🏆</div>
                                 <h3>Categoría principal</h3>
                             </div>
-                            <div style="padding: 2rem; text-align: center;">
-                                <div id="top-category" style="font-size: 2.2rem; font-weight: 800; color: #2D2D2D !important; margin-bottom: 1rem; text-shadow: none;">--</div>
-                                <p style="margin: 0; color: #666 !important; font-size: 1.1rem; line-height: 1.4;">La categoría donde más gastas</p>
+                            <div class="info-card">
+                                <div id="top-category" class="top-category">--</div>
+                                <p>La categoría donde más gastas</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- Recent Expenses Table -->
-                    <div class="expenses-table-section" style="margin-top: 3rem;">
+                    <div class="expenses-table-section">
                         <h2>Gastos Recientes</h2>
                         <div class="table-container">
                             <table>
@@ -218,9 +191,9 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td colspan="4" style="text-align: center; color: var(--text-light); padding: 2rem;">
+                                        <td colspan="4" class="centered">
                                             No hay gastos registrados aún. 
-                                            <a href="tickets.html" style="color: var(--primary); font-weight: 600;">Carga tu primer ticket →</a>
+                                            <a href="tickets.html" class="text-link">Carga tu primer ticket →</a>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -229,9 +202,9 @@
                     </div>
 
                     <!-- Navigation Links -->
-                    <div style="margin-top: 3rem; text-align: center;">
+                    <div class="section-separator">
                         <a href="dashboard.html" class="link">← Volver al Dashboard</a>
-                        <span style="color: var(--text-light); margin: 0 1rem;">•</span>
+                        <span class="separator-dot">•</span>
                         <a href="tickets.html" class="link">Cargar Ticket →</a>
                     </div>
                 </div>
@@ -248,12 +221,13 @@
         </div>
     </footer>
 
-<script src="auth.js"></script>
-    <script src="roles.js"></script>
-    <script src="expenses.js"></script>
-    <script src="analysis.js" defer></script>
-    <script src="auth-events.js"></script>
+<script src="js/auth.js"></script>
+    <script src="js/roles.js"></script>
+    <script src="js/expenses.js"></script>
+    <script src="js/analysis.js" defer></script>
+    <script src="js/auth-events.js"></script>
 
 </body>
 </html>
+
 

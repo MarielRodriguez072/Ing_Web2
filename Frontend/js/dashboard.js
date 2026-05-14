@@ -95,7 +95,7 @@ function displayRecentExpenses(expenses) {
     const recentExpenses = sortedExpenses.slice(0, 5);
 
     if (recentExpenses.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-light);">No hay gastos recientes</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" class="centered empty-row">No hay gastos recientes</td></tr>';
         return;
     }
 

@@ -6,14 +6,15 @@
     <meta name="description" content="Dashboard de Mangómetro - Ve un resumen de tus finanzas personales en tiempo real.">
     <title>Dashboard - Mangómetro</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&amp;display=swap">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="components/dashboard-sidebar.css">
-    <link rel="stylesheet" href="analysis.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard-sidebar.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/analysis.css">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🥭</text></svg>">
 </head>
 <body>
     <!-- Alert Container -->
-    <div id="alert-container" style="position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; max-width: 400px;"></div>
+    <div id="alert-container" class="alert-stack"></div>
 
     <div class="dashboard-wrapper">
         <!-- Sidebar -->
@@ -42,39 +43,11 @@
                 <div class="header-right">
                     <button class="btn btn-secondary btn-sm user-profile-btn" id="user-profile">
                         👤 <span id="user-name">Usuario</span>
-                        <span id="role-indicator" class="role-badge cliente" style="margin-left: 0.5rem; font-size: 0.75rem; padding: 0.2rem 0.4rem; border-radius: 10px; background: rgba(46,204,113,0.2); color: #2ECC71;"></span>
+                        <span id="role-indicator" class="role-badge cliente"></span>
                     </button>
                 </div>
 
-                <style>
-                    .user-profile-btn {
-                        display: flex !important;
-                        align-items: center !important;
-                        gap: 0.5rem !important;
-                        padding: 8px 16px !important;
-                        border-radius: 20px !important;
-                        font-weight: 500 !important;
-                        transition: all 0.3s !important;
-                        white-space: nowrap !important;
-                    }
-                    .user-profile-btn:hover {
-                        background: rgba(255,199,44,0.2) !important;
-                        transform: translateY(-1px) !important;
-                        box-shadow: 0 4px 12px rgba(255,199,44,0.3) !important;
-                    }
-                    .role-badge {
-                        font-size: 0.75rem !important;
-                        padding: 0.25rem 0.5rem !important;
-                        border-radius: 12px !important;
-                        font-weight: 600 !important;
-                    }
-                    .role-badge.cliente { background: rgba(46,204,113,0.2) !important; color: #2ECC71 !important; }
-                    .role-badge.asesor { background: rgba(52,152,219,0.2) !important; color: #3498DB !important; }
-                </style>
-
-
-
-            </header>
+                </header>
 
             <!-- Page Content -->
             <main class="dashboard-content">
@@ -99,8 +72,8 @@
                 </div>
 
                 <!-- Quick Actions -->
-                <div style="margin-bottom: 2rem;">
-                    <button id="add-expense-btn" class="btn btn-primary" style="width: 100%; padding: 16px;">➕ Agregar Gasto</button>
+                <div class="dashboard-actions">
+                    <button id="add-expense-btn" class="btn btn-primary btn-full">➕ Agregar Gasto</button>
                 </div>
 
                 <!-- Recent Expenses Table -->
@@ -116,7 +89,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td colspan="4" style="text-align: center; color: var(--text-light); padding: 2rem;">
+                                <td colspan="4" class="centered">
                                     No hay gastos recientes
                                 </td>
                             </tr>
@@ -127,11 +100,12 @@
         </div>
     </div>
 
-<script src="auth.js"></script>
-    <script src="roles.js"></script>
-    <script src="expenses.js"></script>
-    <script src="dashboard.js"></script>
-    <script src="auth-events.js"></script>
+<script src="js/auth.js"></script>
+    <script src="js/roles.js"></script>
+    <script src="js/expenses.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/auth-events.js"></script>
 
 </body>
 </html>
+
