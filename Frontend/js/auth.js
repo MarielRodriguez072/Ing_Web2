@@ -37,18 +37,18 @@ function saveUser(user) {
     localStorage.setItem('mangometro_users', JSON.stringify(users));
 }
 
-function logout() {
+/*function logout() {
     // Cerrar sesión removiendo los datos del usuario y token
     localStorage.removeItem('mangometro_user');
     localStorage.removeItem('mangometro_token');
-}
+}*/
 
-function clearAuthStorage() {
+/*function clearAuthStorage() {
     localStorage.removeItem('mangometro_user');
     localStorage.removeItem('mangometro_users');
     localStorage.removeItem('mangometro_token');
     localStorage.removeItem('mangometro_remember_username');
-}
+}*/
 
 function isAuthenticated() {
     // Retornar verdadero si hay un usuario iniciado

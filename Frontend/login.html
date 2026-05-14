@@ -287,6 +287,9 @@
 
         // ========== CARGAR REMEMBER ME ==========
         window.addEventListener('load', function() {
+           //Limpiar localstorage
+            
+
             const rememberedUsername = localStorage.getItem('mangometro_remember_username');
             const existingUser = localStorage.getItem('mangometro_user');
 
@@ -296,9 +299,12 @@
             }
 
             // Si ya hay sesión activa, redirigir al dashboard
-            if (existingUser) {
+            console.log(existingUser);
+           
+            if (existingUser && existingUser !== null) {
                 showAlert('Ya tienes una sesión activa. Redirigiendo...', 'info');
                 setTimeout(() => {
+                    console.log('Redirigiendo al dashboard...');
                     window.location.href = 'dashboard.html';
                 }, 1500);
             }

@@ -23,11 +23,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // ========== OBTENER USUARIO DESDE LOCALSTORAGE ==========
     const user = getCurrentUser();
 
-    if (!user) {
+    /*if (!user) {
         alert('No hay sesión activa. Redirigiendo al login...');
         window.location.href = 'login.html';
         return;
-    }
+    }*/
 
     // Iniciar session timeout
     resetSessionTimer();
@@ -177,6 +177,7 @@ function setActiveSidebarLink() {
 function logout() {
     localStorage.removeItem('mangometro_user');
     localStorage.removeItem('mangometro_token');
+    localStorage.removeItem('mangometro_remember_username');
     window.location.href = 'index.html';
 }
 
