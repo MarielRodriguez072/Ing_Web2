@@ -83,18 +83,6 @@
                     </button>
                 </form>
 
-                <div id="destination-selection" class="destination-selection" hidden>
-                    <h2>¿A dónde querés ir?</h2>
-                    <div class="destination-buttons">
-                        <button type="button" class="btn-secondary destination-btn" data-href="dashboard.html">Dashboard</button>
-                        <button type="button" class="btn-secondary destination-btn" data-href="tickets.html">Cargar Tickets</button>
-                        <button type="button" class="btn-secondary destination-btn" data-href="analysis.html">Análisis de Gastos</button>
-                    </div>
-                    <p class="auth-footer-small">
-                        <a href="index.html" class="link link-small">← Volver a inicio</a>
-                    </p>
-                </div>
-
                 <div class="auth-divider">o</div>
 
                 <p class="auth-footer">
@@ -307,10 +295,12 @@
                 rememberMeCheckbox.checked = true;
             }
 
-            // Si ya hay sesión activa, mostrar opciones de navegación
+            // Si ya hay sesión activa, redirigir al dashboard
             if (existingUser) {
-                showAlert('Ya tienes una sesión activa. Elige a dónde ir.', 'info');
-                showDestinationSelection();
+                showAlert('Ya tienes una sesión activa. Redirigiendo...', 'info');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
             }
         });
 
@@ -331,23 +321,6 @@
         passwordInput.addEventListener('input', function() {
             submitBtn.disabled = !identifierInput.value.trim();
         });
-
-        function showDestinationSelection() {
-            const destinationSection = document.getElementById('destination-selection');
-            if (!destinationSection) return;
-
-            destinationSection.hidden = false;
-            document.getElementById('login-form').hidden = true;
-            document.querySelector('.auth-divider').hidden = true;
-            document.querySelector('.auth-footer').hidden = true;
-            document.querySelector('.auth-footer-small').hidden = true;
-
-            document.querySelectorAll('.destination-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    window.location.href = this.dataset.href;
-                });
-            });
-        }
 
         console.log('🥭 Login Mangómetro cargado correctamente');
     </script>

@@ -60,6 +60,7 @@ body {
   color: var(--text);
   background: linear-gradient(135deg, var(--bg) 0%, #FFF8E8 100%);
   overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
 /* ========== CONTAINER REUTILIZABLE ========== */
@@ -93,20 +94,22 @@ body {
   position: fixed;
   top: 0;
   width: 100%;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
   z-index: 1000;
   padding: 1rem 0;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   transition: var(--transition);
-  border-bottom: 1px solid rgba(255, 199, 44, 0.1);
+  border-bottom: 1px solid rgba(255, 199, 44, 0.15);
 }
 
 .navbar.scrolled {
-  background: rgba(255, 255, 255, 0.98);
+  background: rgba(255, 255, 255, 0.95);
   box-shadow: var(--shadow);
   padding: 0.75rem 0;
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
 }
 
 .nav-container {
@@ -213,6 +216,8 @@ body {
 .btn-primary:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-hover);
+  background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
+  filter: brightness(1.1);
 }
 
 .btn-primary:active {
@@ -229,6 +234,7 @@ body {
   background: var(--primary);
   color: var(--text);
   transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 199, 44, 0.3);
 }
 
 .btn-success {
@@ -304,6 +310,21 @@ body {
   position: relative;
   overflow: hidden;
   border: 1px solid rgba(255, 199, 44, 0.1);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 1) 100%);
+  animation: cardFadeIn 0.6s ease-out forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.card:nth-child(1) { animation-delay: 0.1s; }
+.card:nth-child(2) { animation-delay: 0.2s; }
+.card:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes cardFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .card::before {
@@ -319,8 +340,9 @@ body {
 }
 
 .card:hover {
-  transform: translateY(-8px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: var(--shadow-hover);
+  background: linear-gradient(135deg, rgba(255, 199, 44, 0.02) 0%, rgba(255, 140, 66, 0.01) 100%);
 }
 
 .card:hover::before {
@@ -407,6 +429,35 @@ body {
   bottom: 0;
   background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
   pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 20%;
+  left: -10%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(255, 199, 44, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: float 6s ease-in-out infinite;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  bottom: 10%;
+  right: -10%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(255, 140, 66, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: float 8s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
 }
 
 .hero-container {
@@ -658,10 +709,22 @@ body {
 
 /* Footer */
 .footer {
-  background: var(--text);
+  background: linear-gradient(135deg, var(--text) 0%, #2c2c2c 100%);
   color: var(--white);
   text-align: center;
   padding: 3rem 0 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
 }
 
 .footer-credits {
