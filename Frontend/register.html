@@ -331,6 +331,8 @@
             }
 
             // Verificar si el nombre de usuario o email ya existen
+            console.log(username);
+            
             const userExists = users.some(u => u.username.toLowerCase() === username.toLowerCase());
             const emailExists = users.some(u => u.email === email);
 
@@ -369,16 +371,7 @@
                     const role = roleSelect.value;
                     const password = passwordInput.value;
 
-                    const newUser = {
-                        id: Math.random().toString(36).substr(2, 9),
-                        username: username,
-                        email: email,
-                        role: role,
-                        password: password,
-                        createdAt: new Date().toISOString()
-                    };
-
-                    if (saveUser(newUser)) {
+                    if (saveUser(username, email, role, password)) {
 
                         showAlert(`¡Bienvenido, ${username}! Redirigiendo a login...`, 'success');
                         setTimeout(() => {
