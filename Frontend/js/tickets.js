@@ -1,7 +1,4 @@
-// tickets.js - Gestión Tickets + Gastos Manuales (Paso 2)
-
-// import replaced - using globals from expenses.js
-
+// tickets.js - Gestión Tickets + Gastos Manuales
 document.addEventListener('DOMContentLoaded', function() {
   setupRoleUI();
   updateSidebarByRole();
@@ -9,20 +6,15 @@ document.addEventListener('DOMContentLoaded', function() {
   initTicketsPage();
 });
 
-
-function requireAuth() {
-  if (!getCurrentUser()) {
-    window.location.href = 'login.html';
-    return false;
-  }
-  return true;
-}
-
 function initTicketsPage() {
   const user = getCurrentUser();
+  if (!user) {
+    window.location.href = 'login.html';
+    return;
+  }
+
   resetSessionTimer();
   
-  // Ocultar tickets para asesor
   if (isAsesor()) {
     const uploadZone = document.getElementById('uploadZone');
     const manualForm = document.getElementById('manual-expense-form');
@@ -35,40 +27,32 @@ function initTicketsPage() {
     return;
   }
 
-  // Sidebar active
   setActiveSidebarLink('tickets.html');
-
-  // Form manual
-  setupManualForm(user.id);
-
-  // Upload sim
+  setupManualForm();
   setupTicketUpload();
-
-  // Lista recientes
-  displayRecentExpenses(user.id);
+  loadRecentExpenses();
 }
 
-
-function setupManualForm(userId) {
+function setupManualForm() {
   const form = document.getElementById('manual-expense-form');
   if (!form) return;
 
-  form.addEventListener('submit', function(e) {
+  form.addEventListener('submit', async function(e) {
     e.preventDefault();
     const formData = new FormData(form);
     const expense = {
       commerce: formData.get('commerce'),
-      amount: formData.get('amount'),
+      amount: parseFloat(formData.get('amount')),
       date: formData.get('date'),
       category: formData.get('category'),
       description: formData.get('description')
     };
 
     try {
-      addExpense(userId, expense);
+      await createExpense(expense);
       showAlert('✅ Gasto agregado correctamente', 'success');
       form.reset();
-      displayRecentExpenses(userId);
+      loadRecentExpenses();
     } catch (error) {
       showAlert(`❌ Error: ${error.message}`, 'error');
     }
@@ -80,7 +64,6 @@ function setupTicketUpload() {
   const processBtn = document.getElementById('process-ticket-btn');
   const preview = document.getElementById('previewImg');
   const previewContainer = document.getElementById('preview');
-
 
   if (!uploadInput || !processBtn) return;
 
@@ -97,12 +80,10 @@ function setupTicketUpload() {
   });
 
   processBtn.addEventListener('click', function() {
-    // Simulación IA OCR (datos fake random)
     const fakeOCR = generateFakeOCR();
     showAlert('🤖 Procesando con IA OCR...', 'info');
 
     setTimeout(() => {
-      // Auto-fill form
       const commerceInput = document.getElementById('commerce');
       const amountInput = document.getElementById('amount');
       const dateInput = document.getElementById('date');
@@ -117,7 +98,6 @@ function setupTicketUpload() {
       showAlert('✅ Datos extraídos! Revisa y guarda.', 'success');
     }, 1500);
   });
-
 }
 
 function generateFakeOCR() {
@@ -134,62 +114,56 @@ function generateFakeOCR() {
   };
 }
 
-function displayRecentExpenses(userId) {
+async function loadRecentExpenses() {
   const container = document.getElementById('recent-expenses');
   if (!container) return;
 
-  const expenses = getExpenses(userId);
-  const recent = expenses.slice(-5).reverse();
+  try {
+    const expenses = await getExpenses();
+    const recent = expenses.slice(-5).reverse();
 
-  if (recent.length === 0) {
-    container.innerHTML = '<p class=\"empty-state\">No hay gastos recientes</p>';
-    return;
+    if (recent.length === 0) {
+      container.innerHTML = '<p class="empty-state">No hay gastos recientes</p>';
+      return;
+    }
+
+    container.innerHTML = recent.map(exp => `
+      <div class="expense-item">
+        <span>${formatDate(exp.date)}</span>
+        <strong>$${parseFloat(exp.amount).toFixed(2)}</strong>
+        <span>${exp.commerce}</span>
+        <small>${getCategoryLabel(exp.category)}</small>
+        <button onclick="handleDeleteExpense('${exp.id}')">🗑️</button>
+      </div>
+    `).join('');
+  } catch (error) {
+    console.error('Error cargando gastos:', error);
   }
-
-  container.innerHTML = recent.map(exp => `
-    <div class=\"expense-item\">
-      <span>${formatDate(exp.date)}</span>
-      <strong>$${parseFloat(exp.amount).toFixed(2)}</strong>
-      <span>${exp.commerce}</span>
-      <small>${getCategoryLabel(exp.category)}</small>
-      <button onclick=\"deleteExpense('${userId}', '${exp.id}')\">🗑️</button>
-    </div>
-  `).join('');
 }
 
-// Utils compartidos (copiados de dashboard.js)
-
-function getCurrentUser() {
-  return parseLocalStorageJSON('mangometro_user', null);
-}
-
-
-function formatDate(dateStr) {
-  return new Date(dateStr).toLocaleDateString('es-ES');
-}
-
-function getCategoryLabel(value) {
-  return CATEGORIES.find(c => c.value === value)?.label || value;
+async function handleDeleteExpense(expenseId) {
+  if (confirm('¿Eliminar este gasto?')) {
+    try {
+      await deleteExpense(expenseId);
+      showAlert('🗑️ Gasto eliminado', 'success');
+      loadRecentExpenses();
+    } catch (e) {
+      showAlert('❌ Error al eliminar: ' + e.message, 'error');
+    }
+  }
 }
 
 function resetSessionTimer() {
-  const SESSION_TIMEOUT = 30 * 60 * 1000;
+  const TIMEOUT = 30 * 60 * 1000;
   clearTimeout(window.sessionTimer);
   window.sessionTimer = setTimeout(() => {
     logout();
-  }, SESSION_TIMEOUT);
-  window.resetSessionTimer = resetSessionTimer; // Global
-}
-
-function logout() {
-  localStorage.removeItem('mangometro_user');
-  localStorage.removeItem('mangometro_token');
-  window.location.href = 'login.html';
+  }, TIMEOUT);
 }
 
 function setActiveSidebarLink(activePath) {
   const sidebar = document.querySelector('.sidebar');
-  if (!sidebar) return; // No sidebar in simple pages
+  if (!sidebar) return;
   const links = sidebar.querySelectorAll('a');
   links.forEach(link => {
     const href = link.getAttribute('href');
@@ -199,33 +173,4 @@ function setActiveSidebarLink(activePath) {
       link.classList.remove('active');
     }
   });
-  window.setActiveSidebarLink = setActiveSidebarLink;
 }
-
-function showAlert(msg, type = 'info') {
-  // Simple toast
-  const alert = document.createElement('div');
-  alert.className = `alert alert-${type}`;
-  alert.textContent = msg;
-  document.body.appendChild(alert);
-  setTimeout(() => alert.remove(), 3000);
-}
-
-// Global delete (para onclick inline)
-
-window.deleteExpense = function(userId, expenseId) {
-  if (confirm('¿Eliminar este gasto?')) {
-    try {
-      deleteExpense(userId, expenseId);
-      showAlert('🗑️ Gasto eliminado', 'success');
-      initTicketsPage(); // Refresh
-    } catch (e) {
-      console.error('Delete error:', e);
-      showAlert('❌ Error al eliminar: ' + e.message, 'error');
-    }
-  }
-};
-
-
-/* Tickets.js cargado */
-

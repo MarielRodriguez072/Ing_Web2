@@ -1,183 +1,108 @@
 // Dashboard - Mangómetro
-// Funcionalidades: mostrar usuario, calcular y mostrar estadísticas de gastos
-
-const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutos
+const SESSION_TIMEOUT = 30 * 60 * 1000;
 let sessionTimer = null;
 
 function resetSessionTimer() {
-    clearTimeout(sessionTimer);
-    sessionTimer = setTimeout(() => {
-        localStorage.removeItem('mangometro_user');
-        localStorage.removeItem('mangometro_token');
-        alert('Tu sesión ha expirido por inactividad');
-        window.location.href = 'login.html';
-    }, SESSION_TIMEOUT);
+  clearTimeout(sessionTimer);
+  sessionTimer = setTimeout(() => {
+    logout();
+    alert('Tu sesión ha expirido por inactividad');
+    window.location.href = 'login.html';
+  }, SESSION_TIMEOUT);
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    // ========== ROLES + SETUP ==========
-    setupRoleUI();
-    updateSidebarByRole();
+document.addEventListener('DOMContentLoaded', async function() {
+  setupRoleUI();
+  updateSidebarByRole();
 
-    
-    // ========== OBTENER USUARIO DESDE LOCALSTORAGE ==========
-    const user = getCurrentUser();
+  const user = getCurrentUser();
+  if (!user) {
+    window.location.href = 'login.html';
+    return;
+  }
 
-    /*if (!user) {
-        alert('No hay sesión activa. Redirigiendo al login...');
-        window.location.href = 'login.html';
-        return;
-    }*/
+  resetSessionTimer();
+  document.addEventListener('click', resetSessionTimer);
+  document.addEventListener('keypress', resetSessionTimer);
 
-    // Iniciar session timeout
-    resetSessionTimer();
-    document.addEventListener('click', resetSessionTimer);
-    document.addEventListener('keypress', resetSessionTimer);
+  displayUserName(user);
 
-    // Mostrar nombre del usuario
-    displayUserName(user);
-
-    // ========== OBTENER GASTOS ==========
-    const expenses = getUserExpenses(user.id);
-
-    // ========== CALCULAR ESTADÍSTICAS ==========
+  try {
+    const expenses = await getExpenses();
     const stats = getStats(expenses);
-
-    // ========== MOSTRAR EN PANTALLA ==========
     displayStats(stats);
     displayRecentExpenses(expenses);
-    setActiveSidebarLink();
+  } catch (error) {
+    console.error('Error cargando gastos:', error);
+    showAlert('Error cargando datos', 'error');
+  }
 
-    // ========== EVENTOS ==========
-    setupEventListeners();
+  setupEventListeners();
 });
 
-function getCurrentUser() {
-    const userStr = localStorage.getItem('mangometro_user');
-    return userStr ? JSON.parse(userStr) : null;
-}
-
 function displayUserName(user) {
-    const userNameElement = document.querySelector('.user-name');
-    if (userNameElement) {
-        userNameElement.textContent = `Bienvenido, ${user.name || user.email}`;
-    }
-}
-
-function getUserExpenses(userId) {
-    const expensesKey = `mangometro_expenses_${userId}`;
-    const expensesStr = localStorage.getItem(expensesKey);
-    return expensesStr ? JSON.parse(expensesStr) : [];
+  const userNameElement = document.getElementById('user-name');
+  if (userNameElement) {
+    userNameElement.textContent = user.username || user.email;
+  }
+  const roleIndicator = document.getElementById('role-indicator');
+  if (roleIndicator) {
+    roleIndicator.textContent = user.role ? user.role.toUpperCase() : 'CLIENTE';
+    roleIndicator.style.display = 'inline-block';
+    roleIndicator.style.marginLeft = '8px';
+    roleIndicator.style.padding = '2px 8px';
+    roleIndicator.style.borderRadius = '4px';
+    roleIndicator.style.fontSize = '0.75rem';
+    roleIndicator.style.fontWeight = '600';
+    roleIndicator.style.backgroundColor = user.role === 'asesor' ? '#4ECDC4' : '#FFC72C';
+    roleIndicator.style.color = user.role === 'asesor' ? '#fff' : '#2D2D2D';
+  }
 }
 
 function displayStats(stats) {
-    // Total gastado
-    const totalElement = document.querySelector('.card:nth-child(1) .value');
-    if (totalElement) {
-        totalElement.textContent = `$${stats.total}`;
-    }
+  const totalElement = document.getElementById('total-gastado');
+  if (totalElement) totalElement.textContent = `$${stats.total}`;
 
-    // Gasto mensual
-    const monthlyElement = document.querySelector('.card:nth-child(2) .value');
-    if (monthlyElement) {
-        monthlyElement.textContent = `$${stats.monthly}`;
-    }
+  const avgElement = document.getElementById('avg-diario');
+  if (avgElement) {
+    const now = new Date();
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    const dailyAvg = (parseFloat(stats.monthly) / daysInMonth).toFixed(2);
+    avgElement.textContent = `$${dailyAvg}`;
+  }
 }
 
 function displayRecentExpenses(expenses) {
-    const tbody = document.querySelector('tbody');
-    if (!tbody) return;
+  const tbody = document.querySelector('tbody');
+  if (!tbody) return;
 
-    // Ordenar por fecha descendente (más recientes primero)
-    const sortedExpenses = expenses.sort((a, b) => new Date(b.date) - new Date(a.date));
+  const sortedExpenses = [...expenses].sort((a, b) => new Date(b.date) - new Date(a.date));
+  const recentExpenses = sortedExpenses.slice(0, 5);
 
-    // Tomar solo los últimos 5
-    const recentExpenses = sortedExpenses.slice(0, 5);
+  if (recentExpenses.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" class="centered empty-row">No hay gastos recientes</td></tr>';
+    return;
+  }
 
-    if (recentExpenses.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="centered empty-row">No hay gastos recientes</td></tr>';
-        return;
-    }
-
-    tbody.innerHTML = recentExpenses.map(expense => `
-        <tr>
-            <td>${formatDate(expense.date)}</td>
-            <td>${expense.description || expense.commerce || 'Sin descripción'}</td>
-            <td>${formatCategory(expense.category)}</td>
-            <td>$${parseFloat(expense.amount).toFixed(2)}</td>
-        </tr>
-    `).join('');
-}
-
-function formatDate(dateStr) {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('es-ES', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-    });
-}
-
-function formatCategory(category) {
-    const categoryMap = {
-        'supermercado': 'Supermercado',
-        'transporte': 'Transporte',
-        'entretenimiento': 'Entretenimiento',
-        'comida': 'Comida',
-        'servicios': 'Servicios',
-        'otro': 'Otro'
-    };
-    return categoryMap[category] || category || 'Sin categoría';
+  tbody.innerHTML = recentExpenses.map(expense => `
+    <tr>
+      <td>${formatDate(expense.date)}</td>
+      <td>${expense.description || expense.commerce || 'Sin descripción'}</td>
+      <td>${getCategoryLabel(expense.category)}</td>
+      <td>$${parseFloat(expense.amount).toFixed(2)}</td>
+    </tr>
+  `).join('');
 }
 
 function setupEventListeners() {
-    if (isAsesor()) {
-        // Asesor NO puede agregar gastos
-        const addBtn = document.getElementById('add-expense-btn');
-        if (addBtn) addBtn.style.display = 'none';
-        return;
-    }
-    
-    // Cliente: eventos normales
+  if (isAsesor()) {
     const addBtn = document.getElementById('add-expense-btn');
-    if (addBtn) {
-        addBtn.addEventListener('click', () => window.location.href = 'tickets.html');
-    }
-
-    const logoutBtn = document.getElementById('logout-btn');
-    if (logoutBtn) logoutBtn.addEventListener('click', logout);
-
-    document.querySelectorAll('.delete-expense').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const expenseId = this.dataset.id;
-            const userId = getCurrentUser().id;
-            if (confirm('¿Eliminar gasto?')) {
-                deleteExpense(userId, expenseId);
-                displayRecentExpenses(getUserExpenses(userId));
-            }
-        });
-    });
+    if (addBtn) addBtn.style.display = 'none';
+    return;
+  }
+  
+  const addBtn = document.getElementById('add-expense-btn');
+  if (addBtn) {
+    addBtn.addEventListener('click', () => window.location.href = 'tickets.html');
+  }
 }
-
-
-function setActiveSidebarLink() {
-    const currentPath = window.location.pathname.split('/').pop();
-    const links = document.querySelectorAll('.sidebar a');
-    links.forEach(link => {
-        if (link.getAttribute('href') === currentPath) {
-            link.classList.add('active');
-            link.setAttribute('aria-current', 'page');
-        } else {
-            link.classList.remove('active');
-            link.removeAttribute('aria-current');
-        }
-    });
-}
-
-function logout() {
-    localStorage.removeItem('mangometro_user');
-    localStorage.removeItem('mangometro_token');
-    localStorage.removeItem('mangometro_remember_username');
-    window.location.href = 'index.html';
-}
-
