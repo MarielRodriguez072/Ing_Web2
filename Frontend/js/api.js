@@ -56,6 +56,8 @@ async function register(username, email, password, role) {
     method: 'POST',
     body: JSON.stringify({ username, email, password, role }),
   });
+  setToken(data.token);
+  setCurrentUser(data.user);
   return data;
 }
 

@@ -186,9 +186,11 @@
                 console.log('Intentando registrar:', username, email, role);
                 await register(username, email, password, role);
                 console.log('Registro exitoso');
-                showAlert(`¡Cuenta creada exitosamente! Redirigiendo al login...`, 'success');
+                const user = getCurrentUser();
+                const dashboardUrl = user?.role === 'asesor' ? 'dashboard.html' : 'dashboard.html';
+                showAlert(`¡Bienvenido ${user?.username}! Redirigiendo al dashboard...`, 'success');
                 setTimeout(() => {
-                    window.location.href = 'login.html';
+                    window.location.href = dashboardUrl;
                 }, 1500);
             } catch (error) {
                 console.error('Error en registro:', error);
