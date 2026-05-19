@@ -1,116 +1,136 @@
 // Dashboard - Mangómetro
-const SESSION_TIMEOUT = 30 * 60 * 1000;
 let sessionTimer = null;
 
-function resetSessionTimer() {
-  clearTimeout(sessionTimer);
-  sessionTimer = setTimeout(() => {
-    logout();
-    alert('Tu sesión ha expirido por inactividad');
-    window.location.href = 'login.html';
-  }, SESSION_TIMEOUT);
-}
-
 document.addEventListener('DOMContentLoaded', async function() {
-  console.log('🥭 Dashboard inicializado');
+  console.log('🥭 Dashboard cargado');
+
   const user = getCurrentUser();
-  console.log('Usuario:', user ? user.username : 'null');
   if (!user) {
+    console.log('No hay usuario, redirigiendo a login');
     window.location.href = 'login.html';
     return;
   }
 
-  displayUserName(user);
+  console.log('Usuario:', user.username, '| Rol:', user.role);
+
+  // Mostrar nombre y rol
+  const userNameEl = document.getElementById('user-name');
+  if (userNameEl) userNameEl.textContent = user.username || user.email;
+
+  const roleEl = document.getElementById('role-indicator');
+  if (roleEl) {
+    const role = user.role || 'cliente';
+    roleEl.textContent = role.toUpperCase();
+    roleEl.style.display = 'inline-block';
+    roleEl.className = 'role-badge ' + role;
+  }
+
+  // Sidebar role
   setupRoleUI();
   updateSidebarByRole();
 
+  // Session timeout
   resetSessionTimer();
   document.addEventListener('click', resetSessionTimer);
   document.addEventListener('keypress', resetSessionTimer);
 
+  // Cargar datos
+  await loadDashboardData(user);
+
+  // Botón agregar gasto
+  const addBtn = document.getElementById('add-expense-btn');
+  if (addBtn) {
+    if (user.role === 'asesor') {
+      addBtn.style.display = 'none';
+    } else {
+      addBtn.addEventListener('click', function() {
+        window.location.href = 'tickets.html';
+      });
+    }
+  }
+});
+
+async function loadDashboardData(user) {
   try {
     let expenses = await getExpenses();
     if (!Array.isArray(expenses)) expenses = [];
-    console.log('Dashboard - Gastos cargados:', expenses.length);
-    const stats = getStats(expenses);
-    displayStats(stats);
-    displayRecentExpenses(expenses);
+
+    console.log('Gastos cargados:', expenses.length);
+
+    // Calcular stats
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+    let total = 0;
+    let monthly = 0;
+
+    expenses.forEach(function(exp) {
+      const amount = parseFloat(exp.amount) || 0;
+      total += amount;
+      const expDate = new Date(exp.date);
+      if (expDate.getMonth() === currentMonth && expDate.getFullYear() === currentYear) {
+        monthly += amount;
+      }
+    });
+
+    const dailyAvg = monthly / daysInMonth;
+
+    // Mostrar stats
+    var totalEl = document.getElementById('total-gastado');
+    if (totalEl) totalEl.textContent = '$' + total.toFixed(2);
+
+    var monthlyEl = document.getElementById('monthly-gastado');
+    if (monthlyEl) monthlyEl.textContent = '$' + monthly.toFixed(2);
+
+    var avgEl = document.getElementById('avg-diario');
+    if (avgEl) avgEl.textContent = '$' + dailyAvg.toFixed(2);
+
+    var countEl = document.getElementById('total-count');
+    if (countEl) countEl.textContent = expenses.length;
+
+    // Mostrar tabla
+    var tbody = document.getElementById('expenses-tbody');
+    if (!tbody) return;
+
+    if (expenses.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" class="centered">No hay gastos registrados. <a href="tickets.html">Cargá tu primer ticket →</a></td></tr>';
+      return;
+    }
+
+    // Ordenar por fecha descendente y tomar los últimos 10
+    var sorted = expenses.slice().sort(function(a, b) {
+      return new Date(b.date) - new Date(a.date);
+    });
+    var recent = sorted.slice(0, 10);
+
+    tbody.innerHTML = recent.map(function(exp) {
+      var dateStr = new Date(exp.date).toLocaleDateString('es-AR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+      var catLabel = getCategoryLabel(exp.category);
+      var desc = exp.description || exp.commerce || 'Sin descripción';
+      return '<tr>' +
+        '<td>' + dateStr + '</td>' +
+        '<td>' + desc + '</td>' +
+        '<td>' + catLabel + '</td>' +
+        '<td>$' + parseFloat(exp.amount).toFixed(2) + '</td>' +
+        '</tr>';
+    }).join('');
+
   } catch (error) {
-    console.error('Error cargando gastos:', error);
-    const totalEl = document.getElementById('total-gastado');
-    const avgEl = document.getElementById('avg-diario');
-    if (totalEl) totalEl.textContent = '$0.00';
-    if (avgEl) avgEl.textContent = '$0.00';
+    console.error('Error:', error);
     showAlert('Error cargando datos: ' + error.message, 'error');
   }
-
-  setupEventListeners();
-});
-
-function displayUserName(user) {
-  const userNameElement = document.getElementById('user-name');
-  if (userNameElement) {
-    userNameElement.textContent = user.username || user.email;
-  }
-  const roleIndicator = document.getElementById('role-indicator');
-  if (roleIndicator) {
-    const role = user.role || 'cliente';
-    roleIndicator.textContent = role.toUpperCase();
-    roleIndicator.style.display = 'inline-block';
-    roleIndicator.style.marginLeft = '8px';
-    roleIndicator.style.padding = '2px 8px';
-    roleIndicator.style.borderRadius = '4px';
-    roleIndicator.style.fontSize = '0.7rem';
-    roleIndicator.style.fontWeight = '700';
-    roleIndicator.style.backgroundColor = role === 'asesor' ? '#4ECDC4' : '#FFC72C';
-    roleIndicator.style.color = role === 'asesor' ? '#fff' : '#2D2D2D';
-  }
 }
 
-function displayStats(stats) {
-  const totalElement = document.getElementById('total-gastado');
-  if (totalElement) totalElement.textContent = `$${stats.total}`;
-
-  const avgElement = document.getElementById('avg-diario');
-  if (avgElement) {
-    const now = new Date();
-    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-    const dailyAvg = (parseFloat(stats.monthly) / daysInMonth).toFixed(2);
-    avgElement.textContent = `$${dailyAvg}`;
-  }
-}
-
-function displayRecentExpenses(expenses) {
-  const tbody = document.querySelector('.table-container tbody');
-  if (!tbody) return;
-
-  const sortedExpenses = [...expenses].sort((a, b) => new Date(b.date) - new Date(a.date));
-  const recentExpenses = sortedExpenses.slice(0, 5);
-
-  if (recentExpenses.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="4" class="centered">No hay gastos recientes</td></tr>';
-    return;
-  }
-
-  tbody.innerHTML = recentExpenses.map(expense => `
-    <tr>
-      <td>${formatDate(expense.date)}</td>
-      <td>${expense.description || expense.commerce || 'Sin descripción'}</td>
-      <td>${getCategoryLabel(expense.category)}</td>
-      <td>$${parseFloat(expense.amount).toFixed(2)}</td>
-    </tr>
-  `).join('');
-}
-
-function setupEventListeners() {
-  if (isAsesor()) {
-    const addBtn = document.getElementById('add-expense-btn');
-    if (addBtn) addBtn.style.display = 'none';
-    return;
-  }
-  
-  const addBtn = document.getElementById('add-expense-btn');
-  if (addBtn) {
-    addBtn.addEventListener('click', () => window.location.href = 'tickets.html');
-  }
+function resetSessionTimer() {
+  clearTimeout(sessionTimer);
+  sessionTimer = setTimeout(function() {
+    logout();
+    window.location.href = 'login.html';
+  }, SESSION_TIMEOUT);
 }
