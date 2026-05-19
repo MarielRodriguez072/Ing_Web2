@@ -6,9 +6,11 @@
     <meta name="description" content="Gestión de clientes - Mangómetro">
     <title>Clientes - Mangómetro</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/dashboard-sidebar.css">
-    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/base/variables.css">
+    <link rel="stylesheet" href="css/base/components.css">
+    <link rel="stylesheet" href="css/base/utilities.css">
+    <link rel="stylesheet" href="css/layout/sidebar.css">
+    <link rel="stylesheet" href="css/pages/dashboard.css">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🥭</text></svg>">
 </head>
 <body>
@@ -40,7 +42,7 @@
                 <div class="header-right">
                     <button class="btn btn-secondary btn-sm user-profile-btn">
                         👤 <span id="user-name">Cargando...</span>
-                        <span id="role-indicator" class="role-badge cliente" style="display:none;"></span>
+                        <span id="role-indicator" class="role-badge cliente is-hidden"></span>
                     </button>
                 </div>
             </header>
@@ -68,11 +70,12 @@
         </div>
     </div>
 
-    <script src="js/api.js"></script>
-    <script src="js/shared.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/roles.js"></script>
-    <script src="js/clients.js"></script>
-    <script src="js/auth-events.js"></script>
+    <script src="js/core/config.js"></script>
+    <script src="js/core/api.js"></script>
+    <script src="js/core/shared.js"></script>
+    <script src="js/core/auth.js"></script>
+    <script src="js/core/roles.js"></script>
+    <script src="js/pages/clients.js"></script>
+    <script src="js/core/auth-events.js"></script>
 </body>
 </html>

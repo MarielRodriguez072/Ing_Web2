@@ -1,6 +1,3 @@
-let sessionTimer = null;
-let selectedUserId = null;
-
 document.addEventListener('DOMContentLoaded', async function() {
   const user = getCurrentUser();
   if (!user) {
@@ -179,10 +176,4 @@ async function loadDashboardData(userId) {
   }
 }
 
-function resetSessionTimer() {
-  clearTimeout(sessionTimer);
-  sessionTimer = setTimeout(function() {
-    logout();
-    window.location.href = 'login.html';
-  }, SESSION_TIMEOUT);
-}
+

@@ -468,15 +468,6 @@ async function handleDeleteExpense(expenseId) {
   }
 }
 
-function resetSessionTimer() {
-  const TIMEOUT = 30 * 60 * 1000;
-  clearTimeout(window.sessionTimer);
-  window.sessionTimer = setTimeout(() => {
-    logout();
-    window.location.href = 'login.html';
-  }, TIMEOUT);
-}
-
 function setActiveSidebarLink(activePath) {
   const sidebar = document.querySelector('.sidebar');
   if (!sidebar) return;

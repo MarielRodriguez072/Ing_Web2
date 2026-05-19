@@ -6,8 +6,11 @@
     <meta name="description" content="Inicia sesión en tu cuenta de Mangómetro para gestionar tus gastos personales.">
     <title>Iniciar Sesión - Mangómetro</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/base/variables.css">
+    <link rel="stylesheet" href="css/base/components.css">
+    <link rel="stylesheet" href="css/base/utilities.css">
+    <link rel="stylesheet" href="css/pages/landing.css">
+    <link rel="stylesheet" href="css/pages/auth.css">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🥭</text></svg>">
 </head>
 <body>
@@ -77,7 +80,8 @@
         </div>
     </footer>
 
-    <script src="js/api.js"></script>
+    <script src="js/core/config.js"></script>
+    <script src="js/core/api.js"></script>
     <script>
         const loginForm = document.getElementById('login-form');
         const identifierInput = document.getElementById('identifier');

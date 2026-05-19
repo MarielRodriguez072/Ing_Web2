@@ -404,15 +404,6 @@ function renderUltimosGastos(ultimos) {
   `).join('');
 }
 
-function resetSessionTimer() {
-  clearTimeout(window.sessionTimer);
-  window.sessionTimer = setTimeout(() => {
-    logout();
-    showAlert('Sesión expirada', 'error');
-    setTimeout(() => location.href = 'login.html', 2000);
-  }, 30 * 60 * 1000);
-}
-
 async function applyFilters() {
   const monthFilter = document.getElementById('month-filter')?.value;
   const categoryFilter = document.getElementById('category-filter')?.value;

@@ -1,5 +1,3 @@
-let sessionTimer = null;
-
 document.addEventListener('DOMContentLoaded', async function() {
   const user = getCurrentUser();
   if (!user) {
@@ -93,10 +91,4 @@ function escapeHtml(str) {
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-function resetSessionTimer() {
-  clearTimeout(sessionTimer);
-  sessionTimer = setTimeout(function() {
-    logout();
-    window.location.href = 'login.html';
-  }, SESSION_TIMEOUT);
-}
+

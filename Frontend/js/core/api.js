@@ -1,5 +1,3 @@
-const API_URL = 'http://localhost:3000/api';
-
 function getToken() {
   return localStorage.getItem('mangometro_token');
 }
@@ -32,7 +30,7 @@ async function apiCall(endpoint, options = {}) {
 
   let res;
   try {
-    res = await fetch(`${API_URL}${endpoint}`, {
+    res = await fetch(`${CONFIG.API_URL}${endpoint}`, {
       ...options,
       headers,
     });

@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Mangómetro</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/dashboard-sidebar.css">
-    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/base/variables.css">
+    <link rel="stylesheet" href="css/base/components.css">
+    <link rel="stylesheet" href="css/base/utilities.css">
+    <link rel="stylesheet" href="css/layout/sidebar.css">
+    <link rel="stylesheet" href="css/pages/dashboard.css">
 </head>
 <body>
     <div id="alert-container" class="alert-stack"></div>
@@ -33,7 +35,7 @@
                 <div class="header-left">
                     <h1>Dashboard</h1>
                     <p id="dashboard-subtitle">Resumen de tus finanzas</p>
-                    <div id="client-selector" class="client-selector" style="display:none;">
+                    <div id="client-selector" class="client-selector is-hidden">
                         <label for="client-select">Cliente:</label>
                         <select id="client-select">
                             <option value="">Seleccioná un cliente...</option>
@@ -43,7 +45,7 @@
                 <div class="header-right">
                     <button class="btn btn-secondary btn-sm user-profile-btn">
                         👤 <span id="user-name">Cargando...</span>
-                        <span id="role-indicator" class="role-badge cliente" style="display:none;"></span>
+                        <span id="role-indicator" class="role-badge cliente is-hidden"></span>
                     </button>
                 </div>
             </header>
@@ -110,11 +112,12 @@
         </div>
     </div>
 
-    <script src="js/api.js"></script>
-    <script src="js/shared.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/roles.js"></script>
-    <script src="js/dashboard.js"></script>
-    <script src="js/auth-events.js"></script>
+    <script src="js/core/config.js"></script>
+    <script src="js/core/api.js"></script>
+    <script src="js/core/shared.js"></script>
+    <script src="js/core/auth.js"></script>
+    <script src="js/core/roles.js"></script>
+    <script src="js/pages/dashboard.js"></script>
+    <script src="js/core/auth-events.js"></script>
 </body>
 </html>
