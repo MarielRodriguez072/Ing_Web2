@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Gestión de clientes - Mangómetro">
+    <title>Clientes - Mangómetro</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard-sidebar.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75'>🥭</text></svg>">
+</head>
+<body>
+    <div id="alert-container" class="alert-stack"></div>
+
+    <div class="dashboard-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-logo">🥭 Mangómetro</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard.html" class="sidebar-link" data-page="dashboard">📊 Dashboard</a></li>
+                    <li><a href="tickets.html" class="sidebar-link" data-page="tickets">📱 Carga de tickets</a></li>
+                    <li><a href="analysis.html" class="sidebar-link" data-page="analysis">📈 Análisis de gastos</a></li>
+                    <li><a href="clients.html" class="sidebar-link active" data-page="clientes">👥 Clientes</a></li>
+                    <li><hr class="sidebar-divider"></li>
+                    <li><a href="#" class="sidebar-link logout-link" id="sidebar-logout">🚪 Cerrar Sesión</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <div class="dashboard-main">
+            <header class="dashboard-header">
+                <div class="header-left">
+                    <h1>Clientes</h1>
+                    <p>Gestión de clientes registrados en la plataforma</p>
+                </div>
+                <div class="header-right">
+                    <button class="btn btn-secondary btn-sm user-profile-btn">
+                        👤 <span id="user-name">Cargando...</span>
+                        <span id="role-indicator" class="role-badge cliente" style="display:none;"></span>
+                    </button>
+                </div>
+            </header>
+
+            <main class="dashboard-content">
+                <div class="table-section">
+                    <h2>Clientes Registrados</h2>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Email</th>
+                                    <th>Registrado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="clients-tbody">
+                                <tr><td colspan="4" class="centered">Cargando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/shared.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/roles.js"></script>
+    <script src="js/clients.js"></script>
+    <script src="js/auth-events.js"></script>
+</body>
+</html>

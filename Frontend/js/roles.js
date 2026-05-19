@@ -16,12 +16,8 @@ function updateSidebarByRole() {
     let clientesLi = sidebarUl.querySelector('a[data-page="clientes"]')?.parentElement;
     if (!clientesLi) {
       clientesLi = document.createElement('li');
-      clientesLi.innerHTML = '<a href="#" class="sidebar-link" data-page="clientes">👥 Clientes</a>';
+      clientesLi.innerHTML = '<a href="clients.html" class="sidebar-link" data-page="clientes">👥 Clientes</a>';
       sidebarUl.insertBefore(clientesLi, sidebarUl.lastElementChild);
-      clientesLi.querySelector('a').addEventListener('click', (e) => {
-        e.preventDefault();
-        alert('Vista Clientes: Lista de usuarios registrados');
-      });
     }
   } else {
     const clientesLi = sidebarUl.querySelector('a[data-page="clientes"]')?.parentElement;

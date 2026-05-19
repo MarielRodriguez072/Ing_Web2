@@ -203,3 +203,41 @@
   border-color: #FFC72C;
   box-shadow: 0 0 0 3px rgba(255,199,44,0.15);
 }
+
+.actions-cell {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-action {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.btn-action:hover {
+  transform: translateY(-1px);
+}
+
+.btn-dashboard {
+  background: rgba(255,199,44,0.2);
+  color: #8B6914;
+}
+
+.btn-dashboard:hover {
+  background: rgba(255,199,44,0.35);
+}
+
+.btn-analysis {
+  background: rgba(78,205,196,0.2);
+  color: #1a7a72;
+}
+
+.btn-analysis:hover {
+  background: rgba(78,205,196,0.35);
+}
