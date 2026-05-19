@@ -7,6 +7,14 @@
       "role": "cliente",
       "id": "fc8l6xyu3mpc2h3t7",
       "createdAt": "2026-05-19T03:21:59.947Z"
+    },
+    {
+      "username": "pipi",
+      "email": "pipi@gmail.com",
+      "password": "$2b$10$v4QSYGTLErN6/1xBi/VgDOHmYvmbsoSbW3KrwRVWiEw1S4g5PRFVa",
+      "role": "cliente",
+      "id": "9o9lu2hsqmpd1nv1b",
+      "createdAt": "2026-05-19T19:47:01.727Z"
     }
   ],
   "expenses": [
