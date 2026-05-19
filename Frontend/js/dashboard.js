@@ -1,19 +1,13 @@
-// Dashboard - Mangómetro
 let sessionTimer = null;
+let selectedUserId = null;
 
 document.addEventListener('DOMContentLoaded', async function() {
-  console.log('🥭 Dashboard cargado');
-
   const user = getCurrentUser();
   if (!user) {
-    console.log('No hay usuario, redirigiendo a login');
     window.location.href = 'login.html';
     return;
   }
 
-  console.log('Usuario:', user.username, '| Rol:', user.role);
-
-  // Mostrar nombre y rol
   const userNameEl = document.getElementById('user-name');
   if (userNameEl) userNameEl.textContent = user.username || user.email;
 
@@ -25,19 +19,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     roleEl.className = 'role-badge ' + role;
   }
 
-  // Sidebar role
   setupRoleUI();
   updateSidebarByRole();
 
-  // Session timeout
   resetSessionTimer();
   document.addEventListener('click', resetSessionTimer);
   document.addEventListener('keypress', resetSessionTimer);
 
-  // Cargar datos
-  await loadDashboardData(user);
-
-  // Botón agregar gasto
   const addBtn = document.getElementById('add-expense-btn');
   if (addBtn) {
     if (user.role === 'asesor') {
@@ -48,16 +36,82 @@ document.addEventListener('DOMContentLoaded', async function() {
       });
     }
   }
+
+  if (user.role === 'asesor') {
+    await setupAsesorUI(user);
+  } else {
+    await loadDashboardData();
+  }
 });
 
-async function loadDashboardData(user) {
+async function setupAsesorUI(user) {
+  const subtitle = document.getElementById('dashboard-subtitle');
+  if (subtitle) subtitle.textContent = 'Panel de Asesor - Visualización de clientes';
+
+  const selector = document.getElementById('client-selector');
+  const select = document.getElementById('client-select');
+  if (!selector || !select) return;
+
+  selector.style.display = 'flex';
+
+  select.innerHTML = '<option value="">Seleccioná un cliente...</option>';
+
   try {
-    let expenses = await getExpenses();
+    const clients = await getUsers();
+    if (!Array.isArray(clients)) return;
+
+    clients.forEach(function(client) {
+      const opt = document.createElement('option');
+      opt.value = client.id;
+      opt.textContent = client.username + ' (' + client.email + ')';
+      select.appendChild(opt);
+    });
+
+    const savedId = localStorage.getItem('asesor_selected_client_id');
+    if (savedId) {
+      select.value = savedId;
+      selectedUserId = savedId;
+      await loadDashboardData(savedId);
+    }
+  } catch (err) {
+    console.error('Error cargando clientes:', err);
+  }
+
+  select.addEventListener('change', async function() {
+    selectedUserId = this.value;
+    const selectedOption = this.options[this.selectedIndex];
+    const clientName = selectedOption ? selectedOption.textContent.split(' (')[0] : '';
+
+    if (selectedUserId) {
+      localStorage.setItem('asesor_selected_client_id', selectedUserId);
+      localStorage.setItem('asesor_selected_client_name', clientName);
+      await loadDashboardData(selectedUserId);
+    } else {
+      localStorage.removeItem('asesor_selected_client_id');
+      localStorage.removeItem('asesor_selected_client_name');
+      clearDashboard();
+    }
+  });
+}
+
+function clearDashboard() {
+  var totalEl = document.getElementById('total-gastado');
+  if (totalEl) totalEl.textContent = '$0.00';
+  var monthlyEl = document.getElementById('monthly-gastado');
+  if (monthlyEl) monthlyEl.textContent = '$0.00';
+  var avgEl = document.getElementById('avg-diario');
+  if (avgEl) avgEl.textContent = '$0.00';
+  var countEl = document.getElementById('total-count');
+  if (countEl) countEl.textContent = '0';
+  var tbody = document.getElementById('expenses-tbody');
+  if (tbody) tbody.innerHTML = '<tr><td colspan="4" class="centered">Seleccioná un cliente para ver sus gastos</td></tr>';
+}
+
+async function loadDashboardData(userId) {
+  try {
+    let expenses = await getExpenses(userId || undefined);
     if (!Array.isArray(expenses)) expenses = [];
 
-    console.log('Gastos cargados:', expenses.length);
-
-    // Calcular stats
     const now = new Date();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
@@ -75,9 +129,6 @@ async function loadDashboardData(user) {
       }
     });
 
-    const dailyAvg = monthly / daysInMonth;
-
-    // Mostrar stats
     var totalEl = document.getElementById('total-gastado');
     if (totalEl) totalEl.textContent = '$' + total.toFixed(2);
 
@@ -85,21 +136,22 @@ async function loadDashboardData(user) {
     if (monthlyEl) monthlyEl.textContent = '$' + monthly.toFixed(2);
 
     var avgEl = document.getElementById('avg-diario');
-    if (avgEl) avgEl.textContent = '$' + dailyAvg.toFixed(2);
+    if (avgEl) avgEl.textContent = '$' + (monthly / daysInMonth).toFixed(2);
 
     var countEl = document.getElementById('total-count');
     if (countEl) countEl.textContent = expenses.length;
 
-    // Mostrar tabla
     var tbody = document.getElementById('expenses-tbody');
     if (!tbody) return;
 
     if (expenses.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="4" class="centered">No hay gastos registrados. <a href="tickets.html">Cargá tu primer ticket →</a></td></tr>';
+      var msg = getCurrentUser()?.role === 'asesor'
+        ? '<tr><td colspan="4" class="centered">Este cliente no tiene gastos registrados</td></tr>'
+        : '<tr><td colspan="4" class="centered">No hay gastos registrados. <a href="tickets.html">Cargá tu primer ticket →</a></td></tr>';
+      tbody.innerHTML = msg;
       return;
     }
 
-    // Ordenar por fecha descendente y tomar los últimos 10
     var sorted = expenses.slice().sort(function(a, b) {
       return new Date(b.date) - new Date(a.date);
     });

@@ -243,6 +243,25 @@
   animation: sidebarSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.role-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.role-badge.cliente {
+  background-color: #FFC72C;
+  color: #2D2D2D;
+}
+
+.role-badge.asesor {
+  background-color: #4ECDC4;
+  color: #fff;
+}
+
 /* User Profile Dropdown */
 .user-dropdown {
   position: relative;

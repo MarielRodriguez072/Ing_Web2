@@ -97,6 +97,20 @@ describe('ExpensesController', () => {
       expect(expensesService.findAllByUser).not.toHaveBeenCalled();
     });
 
+    it('should return expenses for a specific user when asesor passes userId query', async () => {
+      expensesService.findAllByUser.mockResolvedValue(mockExpenses);
+
+      const req = {
+        user: { userId: 'asesor1', email: 'asesor@test.com', role: 'asesor' },
+      };
+
+      const result = await controller.findAll(req, 'user1');
+
+      expect(result).toEqual(mockExpenses);
+      expect(expensesService.findAllByUser).toHaveBeenCalledWith('user1');
+      expect(expensesService.findAllForAsesor).not.toHaveBeenCalled();
+    });
+
     it('should return empty array for cliente with no expenses', async () => {
       expensesService.findAllByUser.mockResolvedValue([]);
 

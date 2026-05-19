@@ -44,12 +44,18 @@
           <header class="dashboard-header">
             <div class="header-left">
               <h1>Análisis de Gastos</h1>
-              <p>Visualiza tus patrones de consumo y obtén insights</p>
+              <p id="analysis-subtitle">Visualiza tus patrones de consumo y obtén insights</p>
+              <div id="client-selector" class="client-selector" style="display:none;">
+                <label for="client-select">Cliente:</label>
+                <select id="client-select">
+                  <option value="">Seleccioná un cliente...</option>
+                </select>
+              </div>
             </div>
 <div class="header-right">
               <button class="btn btn-secondary btn-sm user-profile-btn" id="user-profile">
                 👤 <span id="user-name">Usuario</span>
-                <span id="role-indicator" class="role-badge cliente"></span>
+                <span id="role-indicator" class="role-badge cliente" style="display:none;"></span>
               </button>
             </div>
 

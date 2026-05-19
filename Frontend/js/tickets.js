@@ -40,19 +40,7 @@ function displayUserName(user) {
   if (userNameElement) {
     userNameElement.textContent = user.username || user.email;
   }
-  const roleIndicator = document.getElementById('role-indicator');
-  if (roleIndicator) {
-    const role = user.role || 'cliente';
-    roleIndicator.textContent = role.toUpperCase();
-    roleIndicator.style.display = 'inline-block';
-    roleIndicator.style.marginLeft = '8px';
-    roleIndicator.style.padding = '2px 8px';
-    roleIndicator.style.borderRadius = '4px';
-    roleIndicator.style.fontSize = '0.7rem';
-    roleIndicator.style.fontWeight = '700';
-    roleIndicator.style.backgroundColor = role === 'asesor' ? '#4ECDC4' : '#FFC72C';
-    roleIndicator.style.color = role === 'asesor' ? '#fff' : '#2D2D2D';
-  }
+  setupRoleUI();
 }
 
 function populateCategories() {

@@ -20,7 +20,7 @@
             <nav class="sidebar-nav">
                 <ul>
                     <li><a href="dashboard.html" class="sidebar-link active">📊 Dashboard</a></li>
-                    <li><a href="tickets.html" class="sidebar-link">📱 Carga de tickets</a></li>
+                    <li><a href="tickets.html" class="sidebar-link" data-page="tickets">📱 Carga de tickets</a></li>
                     <li><a href="analysis.html" class="sidebar-link">📈 Análisis de gastos</a></li>
                     <li><hr class="sidebar-divider"></li>
                     <li><a href="#" class="sidebar-link logout-link" id="sidebar-logout">🚪 Cerrar Sesión</a></li>
@@ -32,7 +32,13 @@
             <header class="dashboard-header">
                 <div class="header-left">
                     <h1>Dashboard</h1>
-                    <p>Resumen de tus finanzas</p>
+                    <p id="dashboard-subtitle">Resumen de tus finanzas</p>
+                    <div id="client-selector" class="client-selector" style="display:none;">
+                        <label for="client-select">Cliente:</label>
+                        <select id="client-select">
+                            <option value="">Seleccioná un cliente...</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="header-right">
                     <button class="btn btn-secondary btn-sm user-profile-btn">

@@ -75,8 +75,13 @@ async function getProfile() {
   return apiCall('/auth/profile');
 }
 
-async function getExpenses() {
-  return apiCall('/expenses');
+async function getExpenses(userId) {
+  const query = userId ? `?userId=${userId}` : '';
+  return apiCall(`/expenses${query}`);
+}
+
+async function getUsers() {
+  return apiCall('/users');
 }
 
 async function createExpense(expense) {

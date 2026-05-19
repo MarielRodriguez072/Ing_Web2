@@ -171,3 +171,35 @@
     grid-template-columns: 1fr;
   }
 }
+
+.client-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.client-selector label {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #666;
+  white-space: nowrap;
+}
+
+.client-selector select {
+  padding: 0.5rem 0.75rem;
+  border: 2px solid #e8e8e8;
+  border-radius: 8px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.9rem;
+  background: #fff;
+  cursor: pointer;
+  min-width: 220px;
+  transition: border-color 0.2s ease;
+}
+
+.client-selector select:focus {
+  outline: none;
+  border-color: #FFC72C;
+  box-shadow: 0 0 0 3px rgba(255,199,44,0.15);
+}

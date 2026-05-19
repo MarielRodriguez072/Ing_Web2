@@ -93,6 +93,36 @@
       "id": "17792210986568mhqr",
       "userId": "9o9lu2hsqmpd1nv1b",
       "createdAt": "2026-05-19T20:04:58.656Z"
+    },
+    {
+      "commerce": "Coniferal",
+      "amount": 1720,
+      "date": "2026-05-15",
+      "category": "transporte",
+      "description": "",
+      "id": "1779224258832p1aa9",
+      "userId": "9o9lu2hsqmpd1nv1b",
+      "createdAt": "2026-05-19T20:57:38.832Z"
+    },
+    {
+      "commerce": "kiosco",
+      "amount": 3000,
+      "date": "2026-05-14",
+      "category": "comida",
+      "description": "Sandwich de miga",
+      "id": "177922434999095uw5",
+      "userId": "9syynkjnbmpd2oxg6",
+      "createdAt": "2026-05-19T20:59:09.990Z"
+    },
+    {
+      "commerce": "cine",
+      "amount": 4300,
+      "date": "2026-05-17",
+      "category": "entretenimiento",
+      "description": "",
+      "id": "1779225415531a8rfz",
+      "userId": "9o9lu2hsqmpd1nv1b",
+      "createdAt": "2026-05-19T21:16:55.531Z"
     }
   ]
 }
