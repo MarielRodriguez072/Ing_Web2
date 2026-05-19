@@ -12,29 +12,36 @@ function resetSessionTimer() {
 }
 
 document.addEventListener('DOMContentLoaded', async function() {
-  setupRoleUI();
-  updateSidebarByRole();
-
+  console.log('🥭 Dashboard inicializado');
   const user = getCurrentUser();
+  console.log('Usuario:', user ? user.username : 'null');
   if (!user) {
     window.location.href = 'login.html';
     return;
   }
 
+  displayUserName(user);
+  setupRoleUI();
+  updateSidebarByRole();
+
   resetSessionTimer();
   document.addEventListener('click', resetSessionTimer);
   document.addEventListener('keypress', resetSessionTimer);
 
-  displayUserName(user);
-
   try {
-    const expenses = await getExpenses();
+    let expenses = await getExpenses();
+    if (!Array.isArray(expenses)) expenses = [];
+    console.log('Dashboard - Gastos cargados:', expenses.length);
     const stats = getStats(expenses);
     displayStats(stats);
     displayRecentExpenses(expenses);
   } catch (error) {
     console.error('Error cargando gastos:', error);
-    showAlert('Error cargando datos', 'error');
+    const totalEl = document.getElementById('total-gastado');
+    const avgEl = document.getElementById('avg-diario');
+    if (totalEl) totalEl.textContent = '$0.00';
+    if (avgEl) avgEl.textContent = '$0.00';
+    showAlert('Error cargando datos: ' + error.message, 'error');
   }
 
   setupEventListeners();
@@ -47,15 +54,16 @@ function displayUserName(user) {
   }
   const roleIndicator = document.getElementById('role-indicator');
   if (roleIndicator) {
-    roleIndicator.textContent = user.role ? user.role.toUpperCase() : 'CLIENTE';
+    const role = user.role || 'cliente';
+    roleIndicator.textContent = role.toUpperCase();
     roleIndicator.style.display = 'inline-block';
     roleIndicator.style.marginLeft = '8px';
     roleIndicator.style.padding = '2px 8px';
     roleIndicator.style.borderRadius = '4px';
-    roleIndicator.style.fontSize = '0.75rem';
-    roleIndicator.style.fontWeight = '600';
-    roleIndicator.style.backgroundColor = user.role === 'asesor' ? '#4ECDC4' : '#FFC72C';
-    roleIndicator.style.color = user.role === 'asesor' ? '#fff' : '#2D2D2D';
+    roleIndicator.style.fontSize = '0.7rem';
+    roleIndicator.style.fontWeight = '700';
+    roleIndicator.style.backgroundColor = role === 'asesor' ? '#4ECDC4' : '#FFC72C';
+    roleIndicator.style.color = role === 'asesor' ? '#fff' : '#2D2D2D';
   }
 }
 
@@ -73,14 +81,14 @@ function displayStats(stats) {
 }
 
 function displayRecentExpenses(expenses) {
-  const tbody = document.querySelector('tbody');
+  const tbody = document.querySelector('.table-container tbody');
   if (!tbody) return;
 
   const sortedExpenses = [...expenses].sort((a, b) => new Date(b.date) - new Date(a.date));
   const recentExpenses = sortedExpenses.slice(0, 5);
 
   if (recentExpenses.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="4" class="centered empty-row">No hay gastos recientes</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="4" class="centered">No hay gastos recientes</td></tr>';
     return;
   }
 

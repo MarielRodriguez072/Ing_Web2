@@ -56,10 +56,12 @@
   transform: translateY(-4px);
 }
 
+.upload-zone.drag-over,
 .upload-zone.dragover {
   border-color: var(--accent);
   background: linear-gradient(135deg, rgba(46, 204, 113, 0.05), rgba(255, 199, 44, 0.05));
   box-shadow: var(--shadow-hover);
+  transform: scale(1.02);
 }
 
 .upload-icon {
@@ -90,6 +92,9 @@
   text-align: center;
   box-shadow: var(--shadow);
   margin-bottom: var(--spacing-2xl);
+}
+
+.preview-container.hidden {
   display: none;
 }
 

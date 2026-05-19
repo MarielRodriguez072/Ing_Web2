@@ -1,19 +1,44 @@
 // analysis.js - Módulo Análisis Gastos Mangómetro
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
   setupRoleUI();
   updateSidebarByRole();
   requireAuth();
-  populateMonthFilter();
-  initAnalysis();
+  
+  const user = getCurrentUser();
+  if (user) displayUserName(user);
+  
+  await populateMonthFilter();
+  await initAnalysis();
   resetSessionTimer();
 });
+
+function displayUserName(user) {
+  const userNameElement = document.getElementById('user-name');
+  if (userNameElement) {
+    userNameElement.textContent = user.username || user.email;
+  }
+  const roleIndicator = document.getElementById('role-indicator');
+  if (roleIndicator) {
+    const role = user.role || 'cliente';
+    roleIndicator.textContent = role.toUpperCase();
+    roleIndicator.style.display = 'inline-block';
+    roleIndicator.style.marginLeft = '8px';
+    roleIndicator.style.padding = '2px 8px';
+    roleIndicator.style.borderRadius = '4px';
+    roleIndicator.style.fontSize = '0.7rem';
+    roleIndicator.style.fontWeight = '700';
+    roleIndicator.style.backgroundColor = role === 'asesor' ? '#4ECDC4' : '#FFC72C';
+    roleIndicator.style.color = role === 'asesor' ? '#fff' : '#2D2D2D';
+  }
+}
 
 async function populateMonthFilter() {
   const select = document.getElementById('month-filter');
   if (!select) return;
 
   try {
-    const expenses = await getExpenses();
+    let expenses = await getExpenses();
+    if (!Array.isArray(expenses)) expenses = [];
     const byMes = getGastoPorMes(expenses);
     const months = Object.keys(byMes).sort().reverse();
 
@@ -82,7 +107,8 @@ async function initAnalysis() {
       const asesorCard = document.querySelector('#asesor-card');
       if (asesorCard) asesorCard.style.display = 'flex';
       
-      const expenses = await getExpenses();
+      let expenses = await getExpenses();
+      if (!Array.isArray(expenses)) expenses = [];
       const byCat = getGastoPorCategoria(expenses);
       const topCat = getCategoriaMayorGasto(byCat);
       document.getElementById('global-top-cat').textContent = topCat.cat || 'Sin datos';
@@ -93,7 +119,9 @@ async function initAnalysis() {
       return;
     }
 
-    const expenses = await getExpenses();
+    let expenses = await getExpenses();
+    if (!Array.isArray(expenses)) expenses = [];
+    console.log('Análisis - gastos cargados:', expenses.length);
     
     const totalEl = document.getElementById('total-gastado');
     if (totalEl) totalEl.textContent = `$${getTotalGastado(expenses)}`;
@@ -103,12 +131,15 @@ async function initAnalysis() {
     const byCat = getGastoPorCategoria(expenses);
     const topCat = getCategoriaMayorGasto(byCat);
     const topCatEl = document.getElementById('top-categoria');
-    if (topCatEl) topCatEl.textContent = topCat.cat || 'Ninguna';
+    if (topCatEl) topCatEl.textContent = getCategoryLabel(topCat.cat);
     const topMontoEl = document.getElementById('top-monto');
     if (topMontoEl) topMontoEl.textContent = `$${topCat.monto.toFixed(2)}`;
     
     const numEl = document.getElementById('num-metric');
     if (numEl) numEl.textContent = expenses.length;
+    
+    const topCategoryEl = document.getElementById('top-category');
+    if (topCategoryEl) topCategoryEl.textContent = getCategoryLabel(topCat.cat);
     
     const byMes = getGastoPorMes(expenses);
     renderMesesChart(byMes);
@@ -120,70 +151,142 @@ async function initAnalysis() {
     
   } catch (error) {
     console.error('Error análisis:', error);
-    showAlert('Error cargando análisis', 'error');
+    showAlert('Error cargando análisis: ' + error.message, 'error');
   }
 }
 
 function renderMesesChart(byMes) {
   const canvas = document.getElementById('trends-chart');
-  if (!canvas || Object.keys(byMes).length === 0) return;
+  if (!canvas) return;
 
   const ctx = canvas.getContext('2d');
   canvas.width = 600;
-  canvas.height = 300;
+  canvas.height = 350;
   
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   
-  const labels = Object.keys(byMes);
-  const data = Object.values(byMes).map(v => parseFloat(v));
+  const entries = Object.entries(byMes);
+  if (entries.length === 0) {
+    ctx.fillStyle = '#999';
+    ctx.font = '14px Roboto';
+    ctx.textAlign = 'center';
+    ctx.fillText('Sin datos para mostrar', canvas.width / 2, canvas.height / 2);
+    return;
+  }
+
+  const labels = entries.map(e => e[0]);
+  const data = entries.map(e => parseFloat(e[1]));
   const maxVal = Math.max(...data);
   
+  const padding = 60;
+  const chartWidth = canvas.width - padding * 2;
+  const chartHeight = 250;
+  const barWidth = Math.min(40, (chartWidth / labels.length) - 10);
+  
+  // Eje Y
+  ctx.strokeStyle = '#ddd';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = padding + (chartHeight / 4) * i;
+    ctx.beginPath();
+    ctx.moveTo(padding, y);
+    ctx.lineTo(canvas.width - padding, y);
+    ctx.stroke();
+    
+    const val = maxVal - (maxVal / 4) * i;
+    ctx.fillStyle = '#666';
+    ctx.font = '10px Roboto';
+    ctx.textAlign = 'right';
+    ctx.fillText(`$${val.toFixed(0)}`, padding - 5, y + 4);
+  }
+  
+  // Barras
   labels.forEach((label, i) => {
-    const barHeight = (data[i] / maxVal) * 200;
-    const x = 60 + i * 50;
+    const barHeight = (data[i] / maxVal) * chartHeight;
+    const x = padding + (chartWidth / labels.length) * i + (chartWidth / labels.length - barWidth) / 2;
+    const y = padding + chartHeight - barHeight;
     
     ctx.fillStyle = '#FFC72C';
-    ctx.fillRect(x, 250 - barHeight, 35, barHeight);
+    ctx.fillRect(x, y, barWidth, barHeight);
     
     ctx.fillStyle = '#2D2D2D';
-    ctx.font = 'bold 11px Roboto';
+    ctx.font = 'bold 10px Roboto';
     ctx.textAlign = 'center';
-    ctx.fillText(labels[i].slice(-2), x + 17, 275);
+    ctx.fillText(`$${data[i].toFixed(0)}`, x + barWidth / 2, y - 5);
     
-    ctx.font = '11px Roboto';
-    ctx.fillText(`$${data[i]}`, x + 17, 240 - barHeight);
+    ctx.fillStyle = '#666';
+    ctx.font = '10px Roboto';
+    ctx.fillText(label.slice(5), x + barWidth / 2, padding + chartHeight + 15);
   });
+  
+  // Título
+  ctx.fillStyle = '#2D2D2D';
+  ctx.font = 'bold 12px Roboto';
+  ctx.textAlign = 'center';
+  ctx.fillText('Gastos por mes', canvas.width / 2, 15);
 }
 
 function renderCategoriasChart(byCat) {
   const canvas = document.getElementById('pie-chart');
-  if (!canvas || Object.keys(byCat).length === 0) return;
+  if (!canvas) return;
   
   const ctx = canvas.getContext('2d');
   canvas.width = 300;
-  canvas.height = 300;
+  canvas.height = 350;
   
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   
-  const total = Object.values(byCat).reduce((sum, v) => sum + parseFloat(v), 0);
+  const entries = Object.entries(byCat);
+  if (entries.length === 0) {
+    ctx.fillStyle = '#999';
+    ctx.font = '14px Roboto';
+    ctx.textAlign = 'center';
+    ctx.fillText('Sin datos para mostrar', canvas.width / 2, canvas.height / 2);
+    return;
+  }
+
+  const total = entries.reduce((sum, [, amount]) => sum + parseFloat(amount), 0);
+  const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#F7DC6F', '#BB8FCE', '#95A5A6'];
+  const centerX = 150;
+  const centerY = 120;
+  const radius = 90;
+  
   let startAngle = 0;
   
-  Object.entries(byCat).forEach(([cat, amount]) => {
+  entries.forEach(([cat, amount], index) => {
     const sliceAngle = (parseFloat(amount) / total) * 2 * Math.PI;
     
     ctx.beginPath();
-    ctx.moveTo(150, 150);
-    ctx.arc(150, 150, 120, startAngle, startAngle + sliceAngle);
+    ctx.moveTo(centerX, centerY);
+    ctx.arc(centerX, centerY, radius, startAngle, startAngle + sliceAngle);
     ctx.closePath();
-    
-    const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#F7DC6F', '#BB8FCE', '#95A5A6'];
-    ctx.fillStyle = colors[Object.keys(byCat).indexOf(cat) % colors.length];
+    ctx.fillStyle = colors[index % colors.length];
     ctx.fill();
     ctx.lineWidth = 2;
     ctx.strokeStyle = '#fff';
     ctx.stroke();
     
     startAngle += sliceAngle;
+  });
+
+  // Leyenda debajo del gráfico
+  let legendY = 230;
+  entries.forEach(([cat, amount], index) => {
+    const percentage = ((parseFloat(amount) / total) * 100).toFixed(1);
+    
+    ctx.fillStyle = colors[index % colors.length];
+    ctx.fillRect(20, legendY, 12, 12);
+    
+    ctx.fillStyle = '#2D2D2D';
+    ctx.font = 'bold 11px Roboto';
+    ctx.textAlign = 'left';
+    ctx.fillText(getCategoryLabel(cat), 38, legendY + 10);
+    
+    ctx.fillStyle = '#666';
+    ctx.font = '10px Roboto';
+    ctx.fillText(`$${parseFloat(amount).toFixed(2)} (${percentage}%)`, 38, legendY + 24);
+    
+    legendY += 32;
   });
 }
 
@@ -215,4 +318,48 @@ function resetSessionTimer() {
   }, 30 * 60 * 1000);
 }
 
+async function applyFilters() {
+  const monthFilter = document.getElementById('month-filter')?.value;
+  const categoryFilter = document.getElementById('category-filter')?.value;
+  
+  try {
+    let expenses = await getExpenses();
+    if (!Array.isArray(expenses)) expenses = [];
+    
+    if (monthFilter) {
+      expenses = expenses.filter(exp => {
+        const expMonth = new Date(exp.date).toISOString().slice(0, 7);
+        return expMonth === monthFilter;
+      });
+    }
+    
+    if (categoryFilter) {
+      expenses = expenses.filter(exp => exp.category === categoryFilter);
+    }
+    
+    const totalEl = document.getElementById('total-gastado');
+    if (totalEl) totalEl.textContent = `$${getTotalGastado(expenses)}`;
+    const promedioEl = document.getElementById('promedio-gasto');
+    if (promedioEl) promedioEl.textContent = `$${getPromedioGasto(expenses)}`;
+    
+    const byCat = getGastoPorCategoria(expenses);
+    const topCat = getCategoriaMayorGasto(byCat);
+    const topCatEl = document.getElementById('top-categoria');
+    if (topCatEl) topCatEl.textContent = getCategoryLabel(topCat.cat);
+    const topMontoEl = document.getElementById('top-monto');
+    if (topMontoEl) topMontoEl.textContent = `$${topCat.monto.toFixed(2)}`;
+    
+    const numEl = document.getElementById('num-metric');
+    if (numEl) numEl.textContent = expenses.length;
+    
+    const byMes = getGastoPorMes(expenses);
+    renderMesesChart(byMes);
+    renderCategoriasChart(byCat);
+    renderUltimosGastos(getUltimosGastos(expenses));
+  } catch (error) {
+    console.error('Error aplicando filtros:', error);
+  }
+}
+
 window.initAnalysis = initAnalysis;
+window.applyFilters = applyFilters;

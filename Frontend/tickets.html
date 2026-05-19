@@ -61,17 +61,17 @@
         
         <!-- Upload Area -->
         <div class="upload-zone" id="uploadZone">
-          <input type="file" id="fileInput" accept="image/*" hidden>
+          <input type="file" id="fileInput" accept="image/*,.pdf" hidden>
           <div class="upload-content">
             <div class="upload-icon">📸</div>
-            <h3>Arrastra tu ticket o haz clic</h3>
-            <p>Sube tu recibo y procesa con IA OCR</p>
+            <h3>Arrastra tu ticket o hacé clic</h3>
+            <p>Imágenes (JPG, PNG, WebP) o PDF</p>
           </div>
         </div>
 
         <!-- Preview -->
-        <div id="preview" class="preview-container">
-          <img id="previewImg" class="preview-img" alt="Preview">
+        <div id="preview" class="preview-container hidden">
+          <img id="previewImg" class="preview-img" alt="Preview" style="display:none;">
           <button id="process-ticket-btn" class="btn btn-primary btn-large">🤖 Procesar con IA OCR</button>
         </div>
 
@@ -84,19 +84,19 @@
           <div class="form-grid">
             <div class="form-group">
               <label class="form-label" for="commerce">Comercio</label>
-              <input type="text" id="commerce" class="form-input" placeholder="Ej: Coto" required>
+              <input type="text" id="commerce" name="commerce" class="form-input" placeholder="Ej: Coto" required>
             </div>
             <div class="form-group">
               <label class="form-label" for="amount">Monto</label>
-              <input type="number" id="amount" class="form-input" placeholder="$ 0.00" step="0.01" min="0" required>
+              <input type="number" id="amount" name="amount" class="form-input" placeholder="$ 0.00" step="0.01" min="0" required>
             </div>
             <div class="form-group">
               <label class="form-label" for="date">Fecha</label>
-              <input type="date" id="date" class="form-input" required>
+              <input type="date" id="date" name="date" class="form-input" required>
             </div>
             <div class="form-group">
               <label class="form-label" for="category">Categoría</label>
-              <select id="category" class="form-select" required>
+              <select id="category" name="category" class="form-select" required>
                 <option value="">Seleccionar categoría</option>
               </select>
               <small class="form-help">Selecciona la categoría del gasto</small>
@@ -104,7 +104,7 @@
           </div>
           <div class="form-group">
             <label class="form-label" for="description">Notas (opcional)</label>
-            <textarea id="description" class="form-textarea" placeholder="Comentarios adicionales..."></textarea>
+            <textarea id="description" name="description" class="form-textarea" placeholder="Comentarios adicionales..."></textarea>
           </div>
           <button type="submit" class="btn btn-primary form-submit">
             💾 Guardar Gasto
@@ -151,6 +151,8 @@
 
     <!-- Scripts -->
 
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="js/api.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/roles.js"></script>

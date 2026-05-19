@@ -1,4 +1,54 @@
 {
-  "users": [],
-  "expenses": []
+  "users": [
+    {
+      "username": "tomas",
+      "email": "tomas@gmail.com",
+      "password": "$2b$10$OG4iVRt5zQyPsSPr5wE/.O96DPtI3qKWffQKWfdMRG3qPF1iArohG",
+      "role": "cliente",
+      "id": "fc8l6xyu3mpc2h3t7",
+      "createdAt": "2026-05-19T03:21:59.947Z"
+    }
+  ],
+  "expenses": [
+    {
+      "commerce": "supermami",
+      "amount": 80000,
+      "date": "2026-05-19",
+      "category": "supermercado",
+      "description": "papas",
+      "id": "17791611718257e3im",
+      "userId": "fc8l6xyu3mpc2h3t7",
+      "createdAt": "2026-05-19T03:26:11.825Z"
+    },
+    {
+      "commerce": "supermami",
+      "amount": 10000,
+      "date": "2026-05-19",
+      "category": "comida",
+      "description": "pizza",
+      "id": "1779161213237w4w1b",
+      "userId": "fc8l6xyu3mpc2h3t7",
+      "createdAt": "2026-05-19T03:26:53.237Z"
+    },
+    {
+      "commerce": "supermami",
+      "amount": 1000000,
+      "date": "2026-05-19",
+      "category": "entretenimiento",
+      "description": "teatro",
+      "id": "17791614727740d6m8",
+      "userId": "fc8l6xyu3mpc2h3t7",
+      "createdAt": "2026-05-19T03:31:12.774Z"
+    },
+    {
+      "commerce": "Comprobante de transferencia",
+      "amount": 88000,
+      "date": "2026-05-10",
+      "category": "otro",
+      "description": "pago de facu",
+      "id": "1779164307166xx06j",
+      "userId": "fc8l6xyu3mpc2h3t7",
+      "createdAt": "2026-05-19T04:18:27.166Z"
+    }
+  ]
 }
