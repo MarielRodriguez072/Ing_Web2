@@ -31,6 +31,22 @@
       "role": "cliente",
       "id": "9syynkjnbmpd2oxg6",
       "createdAt": "2026-05-19T20:15:51.126Z"
+    },
+    {
+      "username": "Ricardo",
+      "email": "ricardo549@gmail.com",
+      "password": "$2b$10$4fpYmevJgNGESNJ3UtOAd.nrJiP6gXml7EUhdF5XsTjXLnvCt/GsG",
+      "role": "asesor",
+      "id": "8rrc8xidimpe9jvvu",
+      "createdAt": "2026-05-20T16:15:39.306Z"
+    },
+    {
+      "username": "Mario",
+      "email": "mario@gmail.com",
+      "password": "$2b$10$GiX66PQBopKHqA5WPAnkc./qQLtyT06QwPDGI801gsNeFbjxjN0SC",
+      "role": "asesor",
+      "id": "l4sg0tu6smpe9qgex",
+      "createdAt": "2026-05-20T16:20:45.849Z"
     }
   ],
   "expenses": [

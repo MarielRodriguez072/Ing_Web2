@@ -12,8 +12,8 @@ document.addEventListener('DOMContentLoaded', async function() {
   if (roleEl) {
     const role = user.role || 'cliente';
     roleEl.textContent = role.toUpperCase();
-    roleEl.style.display = 'inline-block';
     roleEl.className = 'role-badge ' + role;
+    roleEl.style.display = 'inline-block';
   }
 
   setupRoleUI();

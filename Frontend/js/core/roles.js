@@ -34,7 +34,8 @@ function setupRoleUI() {
   const roleIndicator = document.getElementById('role-indicator');
   if (roleIndicator) {
     roleIndicator.textContent = role.toUpperCase();
-    roleIndicator.className = `role-badge ${role}`;
+    roleIndicator.className = 'role-badge ' + role;
+    roleIndicator.style.display = 'inline-block';
   }
 }
 
